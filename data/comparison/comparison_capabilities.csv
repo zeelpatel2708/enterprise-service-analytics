@@ -1,0 +1,14 @@
+Question,Simulated,Real (Calgary)
+"Request volume, trend, seasonality",Yes,Yes
+Resolution time,Yes (hours),Yes (days only)
+Backlog / open requests,Yes,Yes
+Contracted SLA compliance,Yes (SLA by priority),No – benchmark derived from 2024
+Geography,6 regions,~300 communities with coordinates
+Request channel (phone / app / web),No,Yes
+"Revenue, cost, margin",Yes,No
+Technician / workforce productivity,Yes,No
+Customer satisfaction,Yes (survey),No
+Repeat visits / first-time fix,Yes (asset-level),No (no asset ID)
+Targets / budget,Yes,No
+Known 'right answers' to test the analysis,Yes – planted stories,No – genuine discovery
+Real-world noise and messiness,Partial – designed,Yes

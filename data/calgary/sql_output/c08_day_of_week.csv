@@ -1,0 +1,8 @@
+DayOfWeekNumber,DayOfWeek,requests,share,same_day_closure_rate
+1,Monday,223411,0.1614,0.1867
+2,Tuesday,255593,0.1847,0.2021
+3,Wednesday,245396,0.1773,0.2076
+4,Thursday,239631,0.1731,0.2139
+5,Friday,213834,0.1545,0.2026
+6,Saturday,108141,0.0781,0.1646
+7,Sunday,98088,0.0709,0.1685

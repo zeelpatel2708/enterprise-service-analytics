@@ -1,0 +1,33 @@
+raw_region,raw_region_bracketed,rows_affected,status
+toronto,[toronto],254,Needs mapping
+Toronto ,[Toronto ],226,Needs mapping
+TO,[TO],220,Needs mapping
+TORONTO,[TORONTO],204,Needs mapping
+Tor.,[Tor.],204,Needs mapping
+Ottawa ,[Ottawa ],182,Needs mapping
+MISSISSAUGA,[MISSISSAUGA],179,Needs mapping
+Missisauga,[Missisauga],174,Needs mapping
+Mississauga ,[Mississauga ],174,Needs mapping
+OTTAWA,[OTTAWA],167,Needs mapping
+mississauga,[mississauga],164,Needs mapping
+Ott.,[Ott.],163,Needs mapping
+ottawa,[ottawa],162,Needs mapping
+hamilton,[hamilton],139,Needs mapping
+Ham.,[Ham.],131,Needs mapping
+Hamilton ,[Hamilton ],125,Needs mapping
+London ON,[London ON],118,Needs mapping
+HAMILTON,[HAMILTON],115,Needs mapping
+london,[london],115,Needs mapping
+London ,[London ],101,Needs mapping
+LONDON,[LONDON],97,Needs mapping
+KW,[KW],95,Needs mapping
+K-W,[K-W],94,Needs mapping
+Kitchener,[Kitchener],92,Needs mapping
+kitchener-waterloo,[kitchener-waterloo],92,Needs mapping
+Kitchener Waterloo,[Kitchener Waterloo],72,Needs mapping
+Toronto,[Toronto],21057,Valid
+Mississauga,[Mississauga],12968,Valid
+Ottawa,[Ottawa],12570,Valid
+Hamilton,[Hamilton],9662,Valid
+Kitchener-Waterloo,[Kitchener-Waterloo],8751,Valid
+London,[London],8202,Valid

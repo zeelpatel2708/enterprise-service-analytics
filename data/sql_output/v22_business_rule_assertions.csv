@@ -1,0 +1,7 @@
+rule,violations
+Closed before created,0
+CSAT outside 1-5,0
+Negative cost or revenue,0
+Closed with no SLA result,0
+Open with a ClosedDateKey,0
+Status flags not mutually exclusive,0

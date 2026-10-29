@@ -1,0 +1,589 @@
+// =============================================================================
+// measures.dax - DAX measure library for the Enterprise Field Service model
+//
+// HOW TO USE
+//   1. Create a blank table to hold measures:  Home > Enter data > name it "_Measures".
+//   2. For each measure below: select _Measures > New measure > paste the
+//      "Name = expression" block. Set the format shown in [Format: ...].
+//   3. Put measures in Display Folders (Model view > Properties) using the
+//      folder names in the section headers.
+//
+//   Faster option: Tabular Editor 2 (free) > paste each block as a new measure.
+//
+// MODEL ASSUMPTIONS (see POWER_BI_BUILD_GUIDE.md)
+//   FactServiceRequests[CreatedDateKey] -> DimDate[DateKey]   ACTIVE
+//   FactServiceRequests[ClosedDateKey]  -> DimDate[DateKey]   INACTIVE (used via USERELATIONSHIP)
+//   FactTargets[MonthStartDateKey]      -> DimDate[DateKey]   ACTIVE
+//   FactBacklogSnapshot[SnapshotDateKey]-> DimDate[DateKey]   ACTIVE
+//   DimDate is marked as the Date table on DimDate[Date].
+//
+// ATTRIBUTION RULES (important - and a great interview topic)
+//   * Volume & revenue are counted in the month the request was CREATED.
+//   * SLA, resolution time, CSAT and first-time fix are counted in the month the
+//     request was CLOSED - their outcome is unknown until then.
+//   The same rules are used in sql/transformations.sql so numbers reconcile.
+// =============================================================================
+
+
+// ============================================================== 01 Volume ====
+
+Total Requests =
+COUNTROWS ( FactServiceRequests )
+// [Format: #,0]
+
+Cancelled Requests =
+CALCULATE ( [Total Requests], FactServiceRequests[IsCancelled] = 1 )
+// [Format: #,0]
+
+Billable Workload =
+[Total Requests] - [Cancelled Requests]
+// [Format: #,0]
+
+Completed Requests =
+CALCULATE (
+    [Total Requests],
+    FactServiceRequests[IsClosed] = 1,
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// Counted on the CLOSED date  [Format: #,0]
+
+Open Requests (Current) =
+CALCULATE ( [Total Requests], FactServiceRequests[IsOpen] = 1, REMOVEFILTERS ( DimDate ) )
+// Live backlog at the extract snapshot, ignores the date slicer  [Format: #,0]
+
+Backlog (Open at Period End) =
+// Requests created on/before the last visible day and not closed by then.
+// Works at any grain (day/month/quarter) and with any slicer.
+VAR EndKey = MAX ( DimDate[DateKey] )
+RETURN
+    CALCULATE (
+        [Total Requests],
+        REMOVEFILTERS ( DimDate ),
+        FactServiceRequests[CreatedDateKey] <= EndKey,
+        FactServiceRequests[IsCancelled] = 0,
+        FILTER (
+            ALL ( FactServiceRequests[ClosedDateKey] ),
+            ISBLANK ( FactServiceRequests[ClosedDateKey] )
+                || FactServiceRequests[ClosedDateKey] > EndKey
+        )
+    )
+// [Format: #,0]
+
+Backlog (Month-End Snapshot) =
+// Semi-additive: take the LAST snapshot in the period, never sum across months.
+VAR LastSnapshot = MAX ( FactBacklogSnapshot[SnapshotDateKey] )
+RETURN
+    CALCULATE (
+        SUM ( FactBacklogSnapshot[OpenRequests] ),
+        FactBacklogSnapshot[SnapshotDateKey] = LastSnapshot
+    )
+// [Format: #,0]
+
+Backlog PM =
+CALCULATE ( [Backlog (Month-End Snapshot)], DATEADD ( DimDate[Date], -1, MONTH ) )
+// [Format: #,0]
+
+Backlog Growth % =
+DIVIDE ( [Backlog (Month-End Snapshot)] - [Backlog PM], [Backlog PM] )
+// [Format: 0.0%]
+
+Open Breached SLA =
+VAR LastSnapshot = MAX ( FactBacklogSnapshot[SnapshotDateKey] )
+RETURN
+    CALCULATE (
+        SUM ( FactBacklogSnapshot[OpenBreachedSLA] ),
+        FactBacklogSnapshot[SnapshotDateKey] = LastSnapshot
+    )
+// [Format: #,0]
+
+Requests PY =
+CALCULATE ( [Total Requests], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+// [Format: #,0]
+
+Requests YoY % =
+DIVIDE ( [Total Requests] - [Requests PY], [Requests PY] )
+// [Format: +0.0%;-0.0%;0.0%]
+
+
+// ========================================================= 02 Service Level ==
+
+SLA Met Requests =
+CALCULATE (
+    SUM ( FactServiceRequests[SLAMet] ),
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// [Format: #,0]
+
+SLA Measured Requests =
+CALCULATE (
+    COUNT ( FactServiceRequests[SLAMet] ),
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// COUNT ignores blanks, so only closed requests are included  [Format: #,0]
+
+SLA Compliance % =
+DIVIDE ( [SLA Met Requests], [SLA Measured Requests] )
+// [Format: 0.0%]
+
+SLA Breaches =
+[SLA Measured Requests] - [SLA Met Requests]
+// [Format: #,0]
+
+SLA Compliance % PY =
+CALCULATE ( [SLA Compliance %], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+// [Format: 0.0%]
+
+SLA Compliance % Rolling 3M =
+// Ratio of sums over the window - NOT an average of three monthly percentages.
+CALCULATE (
+    [SLA Compliance %],
+    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -3, MONTH )
+)
+// [Format: 0.0%]
+
+Avg Resolution Hours =
+CALCULATE (
+    AVERAGE ( FactServiceRequests[ResolutionHours] ),
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// [Format: #,0.0]
+
+Median Resolution Hours =
+// Median is robust to the few "waiting on parts" tickets that take weeks.
+CALCULATE (
+    MEDIAN ( FactServiceRequests[ResolutionHours] ),
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// [Format: #,0.0]
+
+P90 Resolution Hours =
+CALCULATE (
+    PERCENTILE.INC ( FactServiceRequests[ResolutionHours], 0.9 ),
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// [Format: #,0.0]
+
+First-Time Fix Rate =
+// FirstTimeFixFlag is blank until 30 days after closure, so DIVIDE/COUNT only
+// uses jobs whose outcome is actually known.
+CALCULATE (
+    DIVIDE ( SUM ( FactServiceRequests[FirstTimeFixFlag] ), COUNT ( FactServiceRequests[FirstTimeFixFlag] ) ),
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// [Format: 0.0%]
+
+Repeat Visits =
+SUM ( FactServiceRequests[RepeatVisitFlag] )
+// [Format: #,0]
+
+Repeat Visit Rate =
+DIVIDE ( [Repeat Visits], [Billable Workload] )
+// [Format: 0.0%]
+
+
+// ======================================================== 03 Customer =======
+
+Avg CSAT =
+CALCULATE (
+    AVERAGE ( FactServiceRequests[CSATScore] ),
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// [Format: 0.00]
+
+Avg CSAT PY =
+CALCULATE ( [Avg CSAT], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+// [Format: 0.00]
+
+CSAT Responses =
+CALCULATE (
+    COUNT ( FactServiceRequests[CSATScore] ),
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// [Format: #,0]
+
+CSAT Response Rate =
+DIVIDE ( [CSAT Responses], [Completed Requests] )
+// [Format: 0.0%]
+
+Low-CSAT Requests =
+CALCULATE ( [CSAT Responses], FactServiceRequests[CSATScore] <= 2 )
+// Scores of 1 or 2  [Format: #,0]
+
+Low-CSAT % =
+DIVIDE ( [Low-CSAT Requests], [CSAT Responses] )
+// [Format: 0.0%]
+
+Active Customers =
+CALCULATE ( DISTINCTCOUNT ( FactServiceRequests[CustomerKey] ) )
+// Customers with at least one request in the period  [Format: #,0]
+
+Customers At Risk =
+// Retention proxy: no request in the 180 days before the snapshot
+CALCULATE ( COUNTROWS ( DimCustomer ), DimCustomer[ActivityStatus] = "At Risk (180d+)" )
+// [Format: #,0]
+
+Customer Retention Proxy % =
+DIVIDE (
+    CALCULATE ( COUNTROWS ( DimCustomer ), DimCustomer[ActivityStatus] = "Active" ),
+    COUNTROWS ( DimCustomer )
+)
+// [Format: 0.0%]
+
+
+// ======================================================== 04 Financial ======
+
+Service Revenue =
+SUM ( FactServiceRequests[ServiceRevenue] )
+// [Format: $#,0]
+
+Labour Cost =
+SUM ( FactServiceRequests[LabourCost] )
+// [Format: $#,0]
+
+Parts Cost =
+SUM ( FactServiceRequests[PartsCost] )
+// [Format: $#,0]
+
+Direct Cost =
+[Labour Cost] + [Parts Cost]
+// [Format: $#,0]
+
+Gross Margin =
+[Service Revenue] - [Direct Cost]
+// [Format: $#,0]
+
+Gross Margin % =
+DIVIDE ( [Gross Margin], [Service Revenue] )
+// [Format: 0.0%]
+
+Invoiced Requests =
+CALCULATE ( [Total Requests], FactServiceRequests[BillingType] = "Billable" )
+// [Format: #,0]
+
+Revenue per Request =
+DIVIDE ( [Service Revenue], [Invoiced Requests] )
+// Average invoice value of billable work  [Format: $#,0]
+
+Warranty Cost =
+CALCULATE ( [Direct Cost], FactServiceRequests[BillingType] = "Warranty" )
+// Cost of free callbacks = the price of poor first-time fix  [Format: $#,0]
+
+Warranty Cost % of Direct Cost =
+DIVIDE ( [Warranty Cost], [Direct Cost] )
+// [Format: 0.0%]
+
+Revenue Contribution % =
+DIVIDE ( [Service Revenue], CALCULATE ( [Service Revenue], ALLSELECTED ( DimRegion ) ) )
+// Share of the visible total; swap DimRegion for any dimension  [Format: 0.0%]
+
+Customer Revenue Share % =
+DIVIDE ( [Service Revenue], CALCULATE ( [Service Revenue], ALLSELECTED ( DimCustomer ) ) )
+// [Format: 0.00%]
+
+
+// ================================================= 05 Time Intelligence =====
+
+Revenue YTD =
+CALCULATE ( [Service Revenue], DATESYTD ( DimDate[Date] ) )
+// [Format: $#,0]
+
+Revenue FYTD =
+// Fiscal year ends 31 March
+CALCULATE ( [Service Revenue], DATESYTD ( DimDate[Date], "3/31" ) )
+// [Format: $#,0]
+
+Revenue PY =
+CALCULATE ( [Service Revenue], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+// [Format: $#,0]
+
+Revenue YTD PY =
+CALCULATE ( [Revenue YTD], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+// [Format: $#,0]
+
+Revenue YoY % =
+DIVIDE ( [Service Revenue] - [Revenue PY], [Revenue PY] )
+// [Format: +0.0%;-0.0%;0.0%]
+
+Revenue YTD YoY % =
+DIVIDE ( [Revenue YTD] - [Revenue YTD PY], [Revenue YTD PY] )
+// [Format: +0.0%;-0.0%;0.0%]
+
+Revenue PM =
+CALCULATE ( [Service Revenue], DATEADD ( DimDate[Date], -1, MONTH ) )
+// [Format: $#,0]
+
+Revenue MoM % =
+DIVIDE ( [Service Revenue] - [Revenue PM], [Revenue PM] )
+// [Format: +0.0%;-0.0%;0.0%]
+
+Rolling 3-Month Revenue =
+CALCULATE (
+    [Service Revenue],
+    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -3, MONTH )
+)
+// [Format: $#,0]
+
+Rolling 12-Month Revenue =
+CALCULATE (
+    [Service Revenue],
+    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -12, MONTH )
+)
+// [Format: $#,0]
+
+
+// ============================================ 06 Targets & Performance ======
+
+Revenue Target =
+SUM ( FactTargets[RevenueTarget] )
+// [Format: $#,0]
+
+Revenue Variance =
+[Service Revenue] - [Revenue Target]
+// [Format: $#,0;($#,0)]
+
+Revenue Achievement % =
+DIVIDE ( [Service Revenue], [Revenue Target] )
+// [Format: 0.0%]
+
+SLA Target =
+// Average of the regional SLA targets in the current filter
+// (90% for most regions, 92% for Toronto).
+AVERAGE ( FactTargets[SLATarget] )
+// [Format: 0.0%]
+
+SLA Variance (pts) =
+[SLA Compliance %] - [SLA Target]
+// Percentage points vs target  [Format: +0.0%;-0.0%;0.0%]
+
+CSAT Target =
+AVERAGE ( FactTargets[CSATTarget] )
+// [Format: 0.00]
+
+CSAT Variance =
+[Avg CSAT] - [CSAT Target]
+// [Format: +0.00;-0.00;0.00]
+
+Backlog Target =
+VAR LastMonth = INT ( MAX ( FactBacklogSnapshot[SnapshotDateKey] ) / 100 )   // e.g. 202609
+RETURN
+    CALCULATE (
+        SUM ( FactTargets[BacklogTarget] ),
+        REMOVEFILTERS ( DimDate ),
+        INT ( FactTargets[MonthStartDateKey] / 100 ) = LastMonth
+    )
+// Target for the same month as the backlog snapshot  [Format: #,0]
+
+Backlog vs Target =
+[Backlog (Month-End Snapshot)] - [Backlog Target]
+// Positive = worse than target  [Format: +#,0;-#,0;0]
+
+Active Technicians =
+CALCULATE (
+    DISTINCTCOUNT ( FactServiceRequests[TechnicianKey] ),
+    FactServiceRequests[TechnicianKey] > 0,
+    FactServiceRequests[IsClosed] = 1,
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// Technicians who closed at least one job in the period  [Format: #,0]
+
+Completed per Technician per Month =
+// Average over months so a full year is not divided by one headcount.
+AVERAGEX (
+    VALUES ( DimDate[YearMonthKey] ),
+    DIVIDE ( [Completed Requests], [Active Technicians] )
+)
+// [Format: #,0.0]
+
+Productivity Target =
+AVERAGE ( FactTargets[ProductivityTarget] )
+// [Format: #,0]
+
+Revenue per Technician =
+DIVIDE (
+    CALCULATE (
+        [Service Revenue],
+        USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+    ),
+    [Active Technicians]
+)
+// [Format: $#,0]
+
+Regional Performance Score =
+// Composite 0-100 score: each KPI scored vs target, capped at 110% so one
+// great number cannot hide a bad one. Equal weights (document them!).
+VAR RevScore     = MIN ( [Revenue Achievement %], 1.1 )
+VAR SLAScore     = MIN ( DIVIDE ( [SLA Compliance %], [SLA Target] ), 1.1 )
+VAR CSATScore    = MIN ( DIVIDE ( [Avg CSAT], [CSAT Target] ), 1.1 )
+VAR BacklogScore = MIN ( DIVIDE ( [Backlog Target], [Backlog (Month-End Snapshot)] ), 1.1 )
+RETURN
+    ( RevScore + SLAScore + CSATScore + BacklogScore ) / 4 * 100
+// [Format: 0]
+
+
+// ================================================= 07 Ranking ===============
+
+Region Rank (SLA) =
+IF (
+    ISINSCOPE ( DimRegion[Region] ),
+    RANKX ( ALLSELECTED ( DimRegion[Region] ), [SLA Compliance %], , DESC, DENSE )
+)
+// [Format: 0]
+
+Region Rank (Revenue) =
+IF (
+    ISINSCOPE ( DimRegion[Region] ),
+    RANKX ( ALLSELECTED ( DimRegion[Region] ), [Service Revenue], , DESC, DENSE )
+)
+// [Format: 0]
+
+Technician Rank (FTF) =
+// Only rank technicians with enough jobs to be statistically meaningful,
+// and rank within whatever region/skill filter is applied.
+VAR MinJobs = 150
+RETURN
+    IF (
+        ISINSCOPE ( DimTechnician[TechnicianName] ) && [Completed Requests] >= MinJobs,
+        RANKX (
+            FILTER (
+                ALLSELECTED ( DimTechnician[TechnicianName] ),
+                [Completed Requests] >= MinJobs
+            ),
+            [First-Time Fix Rate], , DESC, DENSE
+        )
+    )
+// [Format: 0]
+
+Technician Rank (Revenue) =
+IF (
+    ISINSCOPE ( DimTechnician[TechnicianName] ),
+    RANKX ( ALLSELECTED ( DimTechnician[TechnicianName] ), [Revenue per Technician], , DESC, DENSE )
+)
+// [Format: 0]
+
+
+// ================================================= 08 Root Cause ============
+
+Emergency Repair Requests =
+CALCULATE ( [Total Requests], DimServiceType[ServiceType] = "Emergency Repair" )
+// [Format: #,0]
+
+Emergency Share of Volume =
+DIVIDE ( [Emergency Repair Requests], [Total Requests] )
+// [Format: 0.0%]
+
+Emergency Repair YoY % =
+VAR PY = CALCULATE ( [Emergency Repair Requests], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+RETURN DIVIDE ( [Emergency Repair Requests] - PY, PY )
+// [Format: +0.0%;-0.0%;0.0%]
+
+Requests per Active Technician =
+DIVIDE ( [Total Requests], [Active Technicians] )
+// Demand pressure on the workforce  [Format: #,0.0]
+
+SLA Compliance % (All Regions) =
+CALCULATE ( [SLA Compliance %], REMOVEFILTERS ( DimRegion ) )
+// Benchmark line for the root-cause page  [Format: 0.0%]
+
+SLA Gap vs Company =
+[SLA Compliance %] - [SLA Compliance % (All Regions)]
+// [Format: +0.0%;-0.0%;0.0%]
+
+Regions Below SLA Target =
+COUNTROWS ( FILTER ( VALUES ( DimRegion[Region] ), [SLA Compliance %] < [SLA Target] ) )
+// [Format: 0]
+
+
+// ================================================= 09 Dynamic / UX ==========
+// Create this disconnected table first: Modeling > New table
+//
+// KPI Selector =
+// DATATABLE (
+//     "KPI", STRING, "Order", INTEGER,
+//     {
+//         { "Service Revenue", 1 },
+//         { "SLA Compliance %", 2 },
+//         { "Avg CSAT", 3 },
+//         { "Backlog", 4 },
+//         { "First-Time Fix Rate", 5 }
+//     }
+// )
+// Sort KPI by Order. Use KPI Selector[KPI] in a slicer.
+
+Selected KPI Value =
+SWITCH (
+    SELECTEDVALUE ( 'KPI Selector'[KPI], "Service Revenue" ),
+    "Service Revenue",      [Service Revenue],
+    "SLA Compliance %",     [SLA Compliance %],
+    "Avg CSAT",             [Avg CSAT],
+    "Backlog",              [Backlog (Month-End Snapshot)],
+    "First-Time Fix Rate",  [First-Time Fix Rate]
+)
+// Format: use a dynamic format string (Measure tools > Format > Dynamic):
+//   SWITCH ( SELECTEDVALUE ( 'KPI Selector'[KPI] ),
+//            "Service Revenue", "$#,0", "Avg CSAT", "0.00", "Backlog", "#,0", "0.0%" )
+
+Selected KPI Title =
+SELECTEDVALUE ( 'KPI Selector'[KPI], "Service Revenue" ) & " by Month - "
+    & SELECTEDVALUE ( DimRegion[Region], "All Regions" )
+
+SLA Status Color =
+// Use in Conditional formatting > Field value
+VAR Gap = [SLA Variance (pts)]
+RETURN
+    SWITCH ( TRUE (), ISBLANK ( Gap ), BLANK (), Gap >= 0, "#2E7D32", Gap >= -0.03, "#8A5300", "#B71C1C" )
+
+Row Highlight Color =
+// Light red background for regions more than 3 pts below their SLA target.
+// Use in Conditional formatting > Background color > Field value on every table column.
+IF ( [SLA Variance (pts)] < -0.03, "#FDECEC" )
+
+SLA Status Icon =
+VAR Gap = [SLA Variance (pts)]
+RETURN
+    SWITCH ( TRUE (), ISBLANK ( Gap ), BLANK (), Gap >= 0, "● On target", Gap >= -0.03, "▲ Watch", "▼ Below target" )
+
+Data As Of =
+"Data as of " & FORMAT ( MAX ( FactServiceRequests[CreatedAt] ), "d mmm yyyy" )
+
+Report Title Region =
+"Regional Performance - " & SELECTEDVALUE ( DimRegion[Region], "All Regions" )
+
+// ================================================= 10 Card Labels ============
+// Small comparison lines under the KPI cards (new Card visual > Reference labels)
+
+Card Sub Revenue =
+VAR v = [Revenue YoY %]
+RETURN IF ( v >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( v ), "0.0%" ) & " vs PY"
+
+Card Sub SLA =
+VAR d = [SLA Compliance %] - [SLA Compliance % PY]
+RETURN
+    "Target " & FORMAT ( [SLA Target], "0.0%" ) & " · "
+        & IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ) * 100, "0.0" ) & " pts vs PY"
+
+Card Sub CSAT =
+"Target " & FORMAT ( [CSAT Target], "0.00" ) & " · PY " & FORMAT ( [Avg CSAT PY], "0.00" )
+
+Card Sub Backlog =
+VAR d = [Backlog vs Target]
+RETURN
+    IF ( d > 0, "▲ " & d & " over target (", "▼ " & ABS ( d ) & " under target (" )
+        & [Backlog Target] & ")"
+
+Card Sub Resolution =
+"PY " & FORMAT ( CALCULATE ( [Avg Resolution Hours], SAMEPERIODLASTYEAR ( DimDate[Date] ) ), "0.0" ) & " h"
+
+Card Sub Completed =
+VAR py = CALCULATE ( [Completed Requests], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+VAR v = DIVIDE ( [Completed Requests] - py, py )
+RETURN IF ( v >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( v ), "0.0%" ) & " vs PY"
+
+Card Color Revenue =
+IF ( [Revenue YoY %] >= 0, "#2E7D32", "#B71C1C" )
+
+Card Color Backlog =
+IF ( [Backlog vs Target] > 0, "#B71C1C", "#2E7D32" )
+
+Card Color Completed =
+VAR py = CALCULATE ( [Completed Requests], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+RETURN IF ( [Completed Requests] >= py, "#2E7D32", "#B71C1C" )

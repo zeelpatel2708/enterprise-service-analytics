@@ -1,0 +1,15 @@
+SourceFile,DefectType,RowsAffected
+fsm_service_requests,Inconsistent region spelling,3821
+fsm_service_requests,Null CustomerID,210
+fsm_service_requests,Invalid CreatedAt date,130
+fsm_service_requests,ClosedAt before CreatedAt,180
+fsm_service_requests,Closed request missing TechnicianID,320
+fsm_service_requests,Exact duplicate rows,640
+billing_invoices,Negative cost values,160
+billing_invoices,Duplicate invoice rows,110
+billing_invoices,Orphan invoices (no matching service request),45
+csat_survey_responses,CSAT score outside 1-5,260
+csat_survey_responses,Customer answered the same survey twice,160
+crm_customers,Inconsistent province values,220
+crm_customers,Customer name casing / whitespace,60
+crm_customers,Duplicate customer rows,12

@@ -1,0 +1,6 @@
+flag,rows_flagged
+Closure date imputed from updated_date,0
+"Re-opened (had closed_date, status open)",3573
+Closed as duplicate,13676
+Open > 365 days,21259
+Unknown community,94791

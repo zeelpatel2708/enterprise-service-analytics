@@ -1,0 +1,9 @@
+ServiceType,ottawa_vol_2025,ottawa_vol_2026,ottawa_volume_yoy,other_regions_volume_yoy,ottawa_sla_2025,ottawa_sla_2026,other_regions_sla_2026
+Emergency Repair,279,450,0.613,0.07,0.935,0.784,0.936
+Compliance Inspection,156,186,0.192,0.099,0.929,0.83,0.92
+Safety Inspection,206,238,0.155,0.034,0.95,0.838,0.921
+Preventive Maintenance,581,661,0.138,0.086,0.936,0.82,0.93
+Standard Repair,791,888,0.123,0.119,0.929,0.823,0.924
+Equipment Upgrade,123,137,0.114,0.07,0.909,0.684,0.882
+Scheduled Maintenance,326,334,0.025,0.111,0.913,0.816,0.936
+New Installation,277,283,0.022,0.042,0.938,0.783,0.896

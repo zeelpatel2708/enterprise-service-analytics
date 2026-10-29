@@ -1,0 +1,2135 @@
+createOrReplace
+
+	expression ProjectFolder = "C:\Users\Lenovo\Downloads\enterprise-service-analytics\enterprise-service-analytics" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+		lineageTag: 91b7f460-fe2f-5a94-ab84-87f2f391742e
+
+		annotation PBI_ResultType = Text
+
+	table DimCustomer
+		lineageTag: 63a2bc38-13b9-50f5-b0a4-fe55c6b8c90a
+
+		column CustomerKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 0e1b942e-745a-5e81-89d3-be208a2fde34
+			summarizeBy: none
+			sourceColumn: CustomerKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column CustomerID
+			dataType: string
+			lineageTag: 1f089e28-7c65-5055-866f-a0b54c21740a
+			summarizeBy: none
+			sourceColumn: CustomerID
+
+			annotation SummarizationSetBy = Automatic
+
+		column CustomerName
+			dataType: string
+			lineageTag: 864bc1b3-a3ef-55e6-9aba-e0c0b8cc883c
+			summarizeBy: none
+			sourceColumn: CustomerName
+
+			annotation SummarizationSetBy = Automatic
+
+		column Industry
+			dataType: string
+			lineageTag: c6b6760f-b907-5c28-b494-5b45f859720f
+			summarizeBy: none
+			sourceColumn: Industry
+
+			annotation SummarizationSetBy = Automatic
+
+		column CustomerSegment
+			dataType: string
+			lineageTag: d3b7a146-4d00-5635-a4b7-3ef21bc836b8
+			summarizeBy: none
+			sourceColumn: CustomerSegment
+
+			annotation SummarizationSetBy = Automatic
+
+		column City
+			dataType: string
+			lineageTag: 774e84d0-f7dc-572b-b635-eaa555de9cdf
+			summarizeBy: none
+			sourceColumn: City
+
+			annotation SummarizationSetBy = Automatic
+
+		column Province
+			dataType: string
+			lineageTag: 76db26a3-6f5d-5111-96f3-84227270c827
+			summarizeBy: none
+			sourceColumn: Province
+
+			annotation SummarizationSetBy = Automatic
+
+		column AccountStartDate
+			dataType: dateTime
+			formatString: yyyy-mm-dd
+			lineageTag: bf236aa0-86a3-5df5-b3fb-d18d01e9e285
+			summarizeBy: none
+			sourceColumn: AccountStartDate
+
+			annotation SummarizationSetBy = Automatic
+
+		column FirstRequestDate
+			dataType: dateTime
+			formatString: yyyy-mm-dd
+			lineageTag: 51e47a83-1f0c-5b0a-be4b-8be35bfdd933
+			summarizeBy: none
+			sourceColumn: FirstRequestDate
+
+			annotation SummarizationSetBy = Automatic
+
+		column LastRequestDate
+			dataType: dateTime
+			formatString: yyyy-mm-dd
+			lineageTag: c8aaaf2e-59e2-55bb-a6b2-9df82d93aed9
+			summarizeBy: none
+			sourceColumn: LastRequestDate
+
+			annotation SummarizationSetBy = Automatic
+
+		column ActivityStatus
+			dataType: string
+			lineageTag: eee397a6-c628-5a71-91f8-3a6ed810ecd5
+			summarizeBy: none
+			sourceColumn: ActivityStatus
+
+			annotation SummarizationSetBy = Automatic
+
+		partition DimCustomer = m
+			mode: import
+			source =
+					let
+					    Source = Csv.Document(
+					        File.Contents(ProjectFolder & "\data\model\DimCustomer.csv"),
+					        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+					    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+					    Typed = Table.TransformColumnTypes(
+					        Promoted,
+					        {
+					        {"CustomerKey", Int64.Type},
+					        {"CustomerID", type text},
+					        {"CustomerName", type text},
+					        {"Industry", type text},
+					        {"CustomerSegment", type text},
+					        {"City", type text},
+					        {"Province", type text},
+					        {"AccountStartDate", type date},
+					        {"FirstRequestDate", type date},
+					        {"LastRequestDate", type date},
+					        {"ActivityStatus", type text}
+					        },
+					        "en-CA")
+					in
+					    Typed
+
+		annotation PBI_ResultType = Table
+
+	table DimDate
+		lineageTag: 2a64b057-4832-5d58-a3ee-e59bbdf52173
+		dataCategory: Time
+
+		column DateKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: b7677b34-b06c-53bf-a112-594b61357457
+			summarizeBy: none
+			sourceColumn: DateKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column Date
+			dataType: dateTime
+			isKey
+			formatString: yyyy-mm-dd
+			lineageTag: e104a780-52dc-562a-be4b-309211939377
+			summarizeBy: none
+			sourceColumn: Date
+
+			annotation SummarizationSetBy = Automatic
+
+		column Year
+			dataType: int64
+			formatString: 0
+			lineageTag: 618f8ec2-3704-5747-bd22-62f03f5e48f0
+			summarizeBy: none
+			sourceColumn: Year
+
+			annotation SummarizationSetBy = Automatic
+
+		column QuarterNumber
+			dataType: int64
+			formatString: 0
+			lineageTag: 813154fd-5e74-585c-a914-77485a89cdd7
+			summarizeBy: none
+			sourceColumn: QuarterNumber
+
+			annotation SummarizationSetBy = Automatic
+
+		column Quarter
+			dataType: string
+			lineageTag: 73cb497c-94a2-55f4-a52f-da5f6170dccf
+			summarizeBy: none
+			sourceColumn: Quarter
+			sortByColumn: QuarterNumber
+
+			annotation SummarizationSetBy = Automatic
+
+		column YearQuarter
+			dataType: string
+			lineageTag: 7e6923dc-0c7b-57a5-8a12-f3439b2f80e8
+			summarizeBy: none
+			sourceColumn: YearQuarter
+
+			annotation SummarizationSetBy = Automatic
+
+		column MonthNumber
+			dataType: int64
+			formatString: 0
+			lineageTag: 036e239c-86b4-56e2-8c62-1bfc7ec4f1a5
+			summarizeBy: none
+			sourceColumn: MonthNumber
+
+			annotation SummarizationSetBy = Automatic
+
+		column Month
+			dataType: string
+			lineageTag: a2f18aa0-e6e1-5022-811d-00bb7f679f2b
+			summarizeBy: none
+			sourceColumn: Month
+			sortByColumn: MonthNumber
+
+			annotation SummarizationSetBy = Automatic
+
+		column MonthShort
+			dataType: string
+			lineageTag: 56c1bc8e-49b5-5e0f-a1f7-bcd05b3d0181
+			summarizeBy: none
+			sourceColumn: MonthShort
+			sortByColumn: MonthNumber
+
+			annotation SummarizationSetBy = Automatic
+
+		column YearMonth
+			dataType: string
+			lineageTag: 4ec6bdc1-cfca-5bd8-8db2-426f7c31795a
+			summarizeBy: none
+			sourceColumn: YearMonth
+			sortByColumn: YearMonthKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column YearMonthKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 77e83083-7b85-5d6b-8632-a345032ad253
+			summarizeBy: none
+			sourceColumn: YearMonthKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column MonthStartDate
+			dataType: dateTime
+			formatString: yyyy-mm-dd
+			lineageTag: c53d9c1d-11a5-559a-aee9-94fe17b6a693
+			summarizeBy: none
+			sourceColumn: MonthStartDate
+
+			annotation SummarizationSetBy = Automatic
+
+		column MonthEndDate
+			dataType: dateTime
+			formatString: yyyy-mm-dd
+			lineageTag: 4d31ee4a-0cbc-5470-bff3-ac425afbad15
+			summarizeBy: none
+			sourceColumn: MonthEndDate
+
+			annotation SummarizationSetBy = Automatic
+
+		column ISOWeek
+			dataType: int64
+			formatString: 0
+			lineageTag: 67e57ba3-2dcd-55b2-ae38-05e508c1aa3e
+			summarizeBy: none
+			sourceColumn: ISOWeek
+
+			annotation SummarizationSetBy = Automatic
+
+		column Day
+			dataType: int64
+			formatString: 0
+			lineageTag: d4e7ef4f-61ba-552f-8ca1-c714b0c35b13
+			summarizeBy: none
+			sourceColumn: Day
+
+			annotation SummarizationSetBy = Automatic
+
+		column DayOfWeekNumber
+			dataType: int64
+			formatString: 0
+			lineageTag: 83c08d4a-2fde-5816-9c02-685d0045bb17
+			summarizeBy: none
+			sourceColumn: DayOfWeekNumber
+
+			annotation SummarizationSetBy = Automatic
+
+		column DayOfWeek
+			dataType: string
+			lineageTag: 81e93f0f-9ce2-5bce-9991-ea6cd796a27c
+			summarizeBy: none
+			sourceColumn: DayOfWeek
+			sortByColumn: DayOfWeekNumber
+
+			annotation SummarizationSetBy = Automatic
+
+		column IsWeekend
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 0f69e869-637f-5b03-aefa-592988f05ad7
+			summarizeBy: sum
+			sourceColumn: IsWeekend
+
+			annotation SummarizationSetBy = Automatic
+
+		column FiscalYear
+			dataType: string
+			lineageTag: cccaa0f0-25af-51ff-b547-a6b6c80fe3ad
+			summarizeBy: none
+			sourceColumn: FiscalYear
+
+			annotation SummarizationSetBy = Automatic
+
+		column FiscalQuarter
+			dataType: string
+			lineageTag: 348c6d80-0221-51fd-892f-2b1a0c8569b3
+			summarizeBy: none
+			sourceColumn: FiscalQuarter
+
+			annotation SummarizationSetBy = Automatic
+
+		column FiscalMonthNumber
+			dataType: int64
+			formatString: 0
+			lineageTag: 9dbc2e52-87c6-524f-bb07-4129908a8b6e
+			summarizeBy: none
+			sourceColumn: FiscalMonthNumber
+
+			annotation SummarizationSetBy = Automatic
+
+		column IsAfterSnapshot
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: e210ada0-5731-5c18-ac54-2afba8173731
+			summarizeBy: sum
+			sourceColumn: IsAfterSnapshot
+
+			annotation SummarizationSetBy = Automatic
+
+		column IsCompleteMonth
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 3f56f764-aae5-5ac2-9bee-2a108880aad9
+			summarizeBy: sum
+			sourceColumn: IsCompleteMonth
+
+			annotation SummarizationSetBy = Automatic
+
+		partition DimDate = m
+			mode: import
+			source =
+					let
+					    Source = Csv.Document(
+					        File.Contents(ProjectFolder & "\data\model\DimDate.csv"),
+					        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+					    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+					    Typed = Table.TransformColumnTypes(
+					        Promoted,
+					        {
+					        {"DateKey", Int64.Type},
+					        {"Date", type date},
+					        {"Year", Int64.Type},
+					        {"QuarterNumber", Int64.Type},
+					        {"Quarter", type text},
+					        {"YearQuarter", type text},
+					        {"MonthNumber", Int64.Type},
+					        {"Month", type text},
+					        {"MonthShort", type text},
+					        {"YearMonth", type text},
+					        {"YearMonthKey", Int64.Type},
+					        {"MonthStartDate", type date},
+					        {"MonthEndDate", type date},
+					        {"ISOWeek", Int64.Type},
+					        {"Day", Int64.Type},
+					        {"DayOfWeekNumber", Int64.Type},
+					        {"DayOfWeek", type text},
+					        {"IsWeekend", Int64.Type},
+					        {"FiscalYear", type text},
+					        {"FiscalQuarter", type text},
+					        {"FiscalMonthNumber", Int64.Type},
+					        {"IsAfterSnapshot", Int64.Type},
+					        {"IsCompleteMonth", Int64.Type}
+					        },
+					        "en-CA")
+					in
+					    Typed
+
+		annotation PBI_ResultType = Table
+
+	table DimPriority
+		lineageTag: 787a6536-b33e-55bd-baf4-28fa9b8e5692
+
+		column PriorityKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 57d47af0-7cbe-58a3-8b78-4ca026e28a14
+			summarizeBy: none
+			sourceColumn: PriorityKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column Priority
+			dataType: string
+			lineageTag: 742495d6-2327-533d-aeb8-34e31c3784ab
+			summarizeBy: none
+			sourceColumn: Priority
+			sortByColumn: SortOrder
+
+			annotation SummarizationSetBy = Automatic
+
+		column SLAHours
+			dataType: int64
+			formatString: 0
+			lineageTag: 5c59d4be-aaa3-5e9a-a3fc-27882aa182b5
+			summarizeBy: none
+			sourceColumn: SLAHours
+
+			annotation SummarizationSetBy = Automatic
+
+		column PriceMultiplier
+			dataType: double
+			formatString: #,0.00
+			lineageTag: ecbe7d8b-db4b-5198-8588-865a49182c10
+			summarizeBy: none
+			sourceColumn: PriceMultiplier
+
+			annotation SummarizationSetBy = Automatic
+
+		column SortOrder
+			dataType: int64
+			formatString: 0
+			lineageTag: d4de0289-7ef8-581c-ba92-3c350bae80a8
+			summarizeBy: none
+			sourceColumn: SortOrder
+
+			annotation SummarizationSetBy = Automatic
+
+		partition DimPriority = m
+			mode: import
+			source =
+					let
+					    Source = Csv.Document(
+					        File.Contents(ProjectFolder & "\data\model\DimPriority.csv"),
+					        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+					    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+					    Typed = Table.TransformColumnTypes(
+					        Promoted,
+					        {
+					        {"PriorityKey", Int64.Type},
+					        {"Priority", type text},
+					        {"SLAHours", Int64.Type},
+					        {"PriceMultiplier", type number},
+					        {"SortOrder", Int64.Type}
+					        },
+					        "en-CA")
+					in
+					    Typed
+
+		annotation PBI_ResultType = Table
+
+	table DimRegion
+		lineageTag: 435540cf-796d-5872-a042-3446a01e8bb0
+
+		column RegionKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: c4af57ef-9bc5-5e1f-b8e3-c592edbe5105
+			summarizeBy: none
+			sourceColumn: RegionKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column Region
+			dataType: string
+			lineageTag: 81ed106a-7da3-5558-91dd-e49d49021652
+			summarizeBy: none
+			sourceColumn: Region
+
+			annotation SummarizationSetBy = Automatic
+
+		column Province
+			dataType: string
+			lineageTag: 831cd563-fb79-5baf-869f-296e262eb664
+			summarizeBy: none
+			sourceColumn: Province
+
+			annotation SummarizationSetBy = Automatic
+
+		column RegionalManager
+			dataType: string
+			lineageTag: 33ea74db-1658-5532-80fc-ce8624e3d4af
+			summarizeBy: none
+			sourceColumn: RegionalManager
+
+			annotation SummarizationSetBy = Automatic
+
+		column RegionalManagerEmail
+			dataType: string
+			lineageTag: b20318aa-ac08-53f5-8961-aafd4ff7873e
+			summarizeBy: none
+			sourceColumn: RegionalManagerEmail
+
+			annotation SummarizationSetBy = Automatic
+
+		partition DimRegion = m
+			mode: import
+			source =
+					let
+					    Source = Csv.Document(
+					        File.Contents(ProjectFolder & "\data\model\DimRegion.csv"),
+					        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+					    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+					    Typed = Table.TransformColumnTypes(
+					        Promoted,
+					        {
+					        {"RegionKey", Int64.Type},
+					        {"Region", type text},
+					        {"Province", type text},
+					        {"RegionalManager", type text},
+					        {"RegionalManagerEmail", type text}
+					        },
+					        "en-CA")
+					in
+					    Typed
+
+		annotation PBI_ResultType = Table
+
+	table DimServiceType
+		lineageTag: 48f6b797-efe7-526d-9733-6d78138dbe45
+
+		column ServiceTypeKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: c5c59078-2987-5fe6-88a0-a541812251f7
+			summarizeBy: none
+			sourceColumn: ServiceTypeKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column ServiceCategory
+			dataType: string
+			lineageTag: 4b730e2b-da07-55d5-8c61-defe98e17f4b
+			summarizeBy: none
+			sourceColumn: ServiceCategory
+
+			annotation SummarizationSetBy = Automatic
+
+		column ServiceType
+			dataType: string
+			lineageTag: 935aa463-18ff-5a1c-9852-5f2656fa6c22
+			summarizeBy: none
+			sourceColumn: ServiceType
+
+			annotation SummarizationSetBy = Automatic
+
+		column ListPrice2024
+			dataType: decimal
+			formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+			lineageTag: ea4cde8e-653b-5b02-a634-15bc6867c386
+			summarizeBy: none
+			sourceColumn: ListPrice2024
+
+			annotation SummarizationSetBy = Automatic
+
+		partition DimServiceType = m
+			mode: import
+			source =
+					let
+					    Source = Csv.Document(
+					        File.Contents(ProjectFolder & "\data\model\DimServiceType.csv"),
+					        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+					    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+					    Typed = Table.TransformColumnTypes(
+					        Promoted,
+					        {
+					        {"ServiceTypeKey", Int64.Type},
+					        {"ServiceCategory", type text},
+					        {"ServiceType", type text},
+					        {"ListPrice2024", Currency.Type}
+					        },
+					        "en-CA")
+					in
+					    Typed
+
+		annotation PBI_ResultType = Table
+
+	table DimTechnician
+		lineageTag: 6155d1b6-8b1d-5cc4-ad25-b1e229a2faa0
+
+		column TechnicianKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: c87954c9-45fc-5cef-bf78-e17a5b268df7
+			summarizeBy: none
+			sourceColumn: TechnicianKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column TechnicianID
+			dataType: string
+			lineageTag: d56370f9-603d-5f11-a8a9-5fbd776be329
+			summarizeBy: none
+			sourceColumn: TechnicianID
+
+			annotation SummarizationSetBy = Automatic
+
+		column TechnicianName
+			dataType: string
+			lineageTag: cbec00f8-5502-5261-9a10-036c2af73830
+			summarizeBy: none
+			sourceColumn: TechnicianName
+
+			annotation SummarizationSetBy = Automatic
+
+		column SkillLevel
+			dataType: string
+			lineageTag: 0bb41b6c-6bef-50ab-a8d4-3425f4878de6
+			summarizeBy: none
+			sourceColumn: SkillLevel
+
+			annotation SummarizationSetBy = Automatic
+
+		column Specialization
+			dataType: string
+			lineageTag: 695dc222-24f9-5f5a-a28d-53bb09071f56
+			summarizeBy: none
+			sourceColumn: Specialization
+
+			annotation SummarizationSetBy = Automatic
+
+		column Region
+			dataType: string
+			lineageTag: 546c2d6d-15d0-5c1a-8996-890363a57953
+			summarizeBy: none
+			sourceColumn: Region
+
+			annotation SummarizationSetBy = Automatic
+
+		column HireDate
+			dataType: dateTime
+			formatString: yyyy-mm-dd
+			lineageTag: 2f59c9af-8881-54b0-8a84-3b2d51e075fb
+			summarizeBy: none
+			sourceColumn: HireDate
+
+			annotation SummarizationSetBy = Automatic
+
+		column TerminationDate
+			dataType: dateTime
+			formatString: yyyy-mm-dd
+			lineageTag: e3dff5ee-af33-50c8-9645-7133065f7ee0
+			summarizeBy: none
+			sourceColumn: TerminationDate
+
+			annotation SummarizationSetBy = Automatic
+
+		column IsActive
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: f812923e-4946-5497-a472-3bebc3a4e9a8
+			summarizeBy: sum
+			sourceColumn: IsActive
+
+			annotation SummarizationSetBy = Automatic
+
+		column TenureYears
+			dataType: double
+			formatString: #,0.00
+			lineageTag: 40f5ff4f-bc2c-5124-a97c-e502f07c3244
+			summarizeBy: none
+			sourceColumn: TenureYears
+
+			annotation SummarizationSetBy = Automatic
+
+		column TenureBand
+			dataType: string
+			lineageTag: f7ed6310-6756-547e-9ea0-ea18f09de5ab
+			summarizeBy: none
+			sourceColumn: TenureBand
+
+			annotation SummarizationSetBy = Automatic
+
+		partition DimTechnician = m
+			mode: import
+			source =
+					let
+					    Source = Csv.Document(
+					        File.Contents(ProjectFolder & "\data\model\DimTechnician.csv"),
+					        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+					    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+					    Typed = Table.TransformColumnTypes(
+					        Promoted,
+					        {
+					        {"TechnicianKey", Int64.Type},
+					        {"TechnicianID", type text},
+					        {"TechnicianName", type text},
+					        {"SkillLevel", type text},
+					        {"Specialization", type text},
+					        {"Region", type text},
+					        {"HireDate", type date},
+					        {"TerminationDate", type date},
+					        {"IsActive", Int64.Type},
+					        {"TenureYears", type number},
+					        {"TenureBand", type text}
+					        },
+					        "en-CA")
+					in
+					    Typed
+
+		annotation PBI_ResultType = Table
+
+	table FactBacklogSnapshot
+		lineageTag: d12804e0-d2fa-5174-9990-9a056dca89be
+
+		column RegionKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 3422a19c-3148-5b55-9af0-59b05048a03d
+			summarizeBy: none
+			sourceColumn: RegionKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column SnapshotDateKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: bffc6cbb-b7e0-5e8e-9521-a4bdafec6df5
+			summarizeBy: none
+			sourceColumn: SnapshotDateKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column OpenRequests
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 26d4bdb6-530a-59e4-9415-753173fc0293
+			summarizeBy: sum
+			sourceColumn: OpenRequests
+
+			annotation SummarizationSetBy = Automatic
+
+		column OpenBreachedSLA
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: cf1c0f89-3f11-53bd-98eb-85ccbdd5f301
+			summarizeBy: sum
+			sourceColumn: OpenBreachedSLA
+
+			annotation SummarizationSetBy = Automatic
+
+		column OpenOver7Days
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: dc9ce8b4-48b2-5a3a-a8a4-81d178560a41
+			summarizeBy: sum
+			sourceColumn: OpenOver7Days
+
+			annotation SummarizationSetBy = Automatic
+
+		partition FactBacklogSnapshot = m
+			mode: import
+			source =
+					let
+					    Source = Csv.Document(
+					        File.Contents(ProjectFolder & "\data\model\FactBacklogSnapshot.csv"),
+					        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+					    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+					    Typed = Table.TransformColumnTypes(
+					        Promoted,
+					        {
+					        {"RegionKey", Int64.Type},
+					        {"SnapshotDateKey", Int64.Type},
+					        {"OpenRequests", Int64.Type},
+					        {"OpenBreachedSLA", Int64.Type},
+					        {"OpenOver7Days", Int64.Type}
+					        },
+					        "en-CA")
+					in
+					    Typed
+
+		annotation PBI_ResultType = Table
+
+	table FactServiceRequests
+		lineageTag: 1b10cdfa-cf88-5cf4-9b0e-4e54b7e6b45a
+
+		column ServiceRequestID
+			dataType: string
+			lineageTag: 94569fb8-623a-58e1-a12a-729bee908d00
+			summarizeBy: none
+			sourceColumn: ServiceRequestID
+
+			annotation SummarizationSetBy = Automatic
+
+		column AssetID
+			dataType: string
+			isHidden
+			lineageTag: aa820594-529b-5872-a1c4-f9b72ea64e9c
+			summarizeBy: none
+			sourceColumn: AssetID
+
+			annotation SummarizationSetBy = Automatic
+
+		column CustomerKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 80583f8a-2f83-5e95-b089-c0442276be8e
+			summarizeBy: none
+			sourceColumn: CustomerKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column TechnicianKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 995a60cc-9272-57a6-b650-295e680c2608
+			summarizeBy: none
+			sourceColumn: TechnicianKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column RegionKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: ffe254b3-dc92-5ff4-883e-1125302ef9bd
+			summarizeBy: none
+			sourceColumn: RegionKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column ServiceTypeKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 47497320-43c5-51eb-a990-1d370fe2ffd2
+			summarizeBy: none
+			sourceColumn: ServiceTypeKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column PriorityKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 098e1923-6abc-5624-8dcc-94129378365a
+			summarizeBy: none
+			sourceColumn: PriorityKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column CreatedDateKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 35860900-9057-53c7-bb50-49cbf086aeaa
+			summarizeBy: none
+			sourceColumn: CreatedDateKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column ClosedDateKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 39d6ce53-75a3-5c9d-8ab2-7a510517f8e1
+			summarizeBy: none
+			sourceColumn: ClosedDateKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column CreatedAt
+			dataType: dateTime
+			formatString: yyyy-mm-dd hh:nn
+			lineageTag: 948c2fc2-3540-5731-98ef-5b4b0a6d38ef
+			summarizeBy: none
+			sourceColumn: CreatedAt
+
+			annotation SummarizationSetBy = Automatic
+
+		column ClosedAt
+			dataType: dateTime
+			formatString: yyyy-mm-dd hh:nn
+			lineageTag: 245bc27b-005a-5cdd-ba46-cd77fa9588b2
+			summarizeBy: none
+			sourceColumn: ClosedAt
+
+			annotation SummarizationSetBy = Automatic
+
+		column CreatedHour
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 46ec2e5b-8d7a-5a7b-a20b-13ac29682a5a
+			summarizeBy: none
+			sourceColumn: CreatedHour
+
+			annotation SummarizationSetBy = Automatic
+
+		column Status
+			dataType: string
+			lineageTag: 21ed3c3e-ceab-59f2-a34d-73bd923f1dd0
+			summarizeBy: none
+			sourceColumn: Status
+
+			annotation SummarizationSetBy = Automatic
+
+		column IsClosed
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: aaa2b3d7-c718-5653-ae3e-68a0932bc972
+			summarizeBy: sum
+			sourceColumn: IsClosed
+
+			annotation SummarizationSetBy = Automatic
+
+		column IsOpen
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 22ef0194-17a6-5f93-b7ee-13b4ab8f57aa
+			summarizeBy: sum
+			sourceColumn: IsOpen
+
+			annotation SummarizationSetBy = Automatic
+
+		column IsCancelled
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: ae4ac0aa-b75e-5a30-8264-9401a1daa9a5
+			summarizeBy: sum
+			sourceColumn: IsCancelled
+
+			annotation SummarizationSetBy = Automatic
+
+		column SLAHours
+			dataType: double
+			isHidden
+			formatString: #,0.00
+			lineageTag: 9b7cbb75-bad2-554d-bc7a-a90958e92c6a
+			summarizeBy: none
+			sourceColumn: SLAHours
+
+			annotation SummarizationSetBy = Automatic
+
+		column ResolutionHours
+			dataType: double
+			isHidden
+			formatString: #,0.00
+			lineageTag: 3f2da05d-6179-552d-8efa-89fdacebbfab
+			summarizeBy: sum
+			sourceColumn: ResolutionHours
+
+			annotation SummarizationSetBy = Automatic
+
+		column SLAMet
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 5cd85073-dc8c-52cb-af3d-4f204df160e4
+			summarizeBy: sum
+			sourceColumn: SLAMet
+
+			annotation SummarizationSetBy = Automatic
+
+		column SLAStatus
+			dataType: string
+			lineageTag: 19cba8a5-476b-5d4f-b820-7cd14ed911e2
+			summarizeBy: none
+			sourceColumn: SLAStatus
+
+			annotation SummarizationSetBy = Automatic
+
+		column OpenAgeHours
+			dataType: double
+			isHidden
+			formatString: #,0.00
+			lineageTag: 66f08c66-3944-5b42-be7d-0fd5c163e325
+			summarizeBy: sum
+			sourceColumn: OpenAgeHours
+
+			annotation SummarizationSetBy = Automatic
+
+		column RepeatVisitFlag
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 09eaea7e-995c-5eaa-9cf3-20a67c62e29f
+			summarizeBy: sum
+			sourceColumn: RepeatVisitFlag
+
+			annotation SummarizationSetBy = Automatic
+
+		column RepeatOfRequestID
+			dataType: string
+			isHidden
+			lineageTag: d72ad32d-9f69-57c7-a63b-1b2954a589a5
+			summarizeBy: none
+			sourceColumn: RepeatOfRequestID
+
+			annotation SummarizationSetBy = Automatic
+
+		column FirstTimeFixFlag
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 99b4163e-3547-5b48-8489-179bee9f16b4
+			summarizeBy: sum
+			sourceColumn: FirstTimeFixFlag
+
+			annotation SummarizationSetBy = Automatic
+
+		column InvoiceID
+			dataType: string
+			isHidden
+			lineageTag: 222b6429-f0a3-5513-a854-ac0cdf99a530
+			summarizeBy: none
+			sourceColumn: InvoiceID
+
+			annotation SummarizationSetBy = Automatic
+
+		column IsInvoiced
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: fbc061d5-37ea-5aab-87bb-14c626b3d801
+			summarizeBy: sum
+			sourceColumn: IsInvoiced
+
+			annotation SummarizationSetBy = Automatic
+
+		column BillingType
+			dataType: string
+			lineageTag: a010e040-0216-53c8-8b32-b51c6205b063
+			summarizeBy: none
+			sourceColumn: BillingType
+
+			annotation SummarizationSetBy = Automatic
+
+		column WorkHours
+			dataType: double
+			isHidden
+			formatString: #,0.00
+			lineageTag: 05b410c7-a295-5ccb-8ac2-e5f068cb3eef
+			summarizeBy: sum
+			sourceColumn: WorkHours
+
+			annotation SummarizationSetBy = Automatic
+
+		column LabourCost
+			dataType: decimal
+			isHidden
+			formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+			lineageTag: 19c4d824-e4be-582d-aa4f-c607fa7e0ae6
+			summarizeBy: sum
+			sourceColumn: LabourCost
+
+			annotation SummarizationSetBy = Automatic
+
+		column PartsCost
+			dataType: decimal
+			isHidden
+			formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+			lineageTag: fcecb71e-d16a-5281-861b-f3a17714b751
+			summarizeBy: sum
+			sourceColumn: PartsCost
+
+			annotation SummarizationSetBy = Automatic
+
+		column ServiceRevenue
+			dataType: decimal
+			isHidden
+			formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+			lineageTag: 2e60fa75-b79a-5f01-a513-0c5b959add5e
+			summarizeBy: sum
+			sourceColumn: ServiceRevenue
+
+			annotation SummarizationSetBy = Automatic
+
+		column CSATScore
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: d08a78a8-fad2-5293-a85b-48fecaf581f6
+			summarizeBy: sum
+			sourceColumn: CSATScore
+
+			annotation SummarizationSetBy = Automatic
+
+		column DQ_MissingTechnician
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 0925bba5-a5b6-5104-9c07-c5241b4e55e2
+			summarizeBy: sum
+			sourceColumn: DQ_MissingTechnician
+
+			annotation SummarizationSetBy = Automatic
+
+		partition FactServiceRequests = m
+			mode: import
+			source =
+					let
+					    Source = Csv.Document(
+					        File.Contents(ProjectFolder & "\data\model\FactServiceRequests.csv"),
+					        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+					    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+					    Typed = Table.TransformColumnTypes(
+					        Promoted,
+					        {
+					        {"ServiceRequestID", type text},
+					        {"AssetID", type text},
+					        {"CustomerKey", Int64.Type},
+					        {"TechnicianKey", Int64.Type},
+					        {"RegionKey", Int64.Type},
+					        {"ServiceTypeKey", Int64.Type},
+					        {"PriorityKey", Int64.Type},
+					        {"CreatedDateKey", Int64.Type},
+					        {"ClosedDateKey", Int64.Type},
+					        {"CreatedAt", type datetime},
+					        {"ClosedAt", type datetime},
+					        {"CreatedHour", Int64.Type},
+					        {"Status", type text},
+					        {"IsClosed", Int64.Type},
+					        {"IsOpen", Int64.Type},
+					        {"IsCancelled", Int64.Type},
+					        {"SLAHours", type number},
+					        {"ResolutionHours", type number},
+					        {"SLAMet", Int64.Type},
+					        {"SLAStatus", type text},
+					        {"OpenAgeHours", type number},
+					        {"RepeatVisitFlag", Int64.Type},
+					        {"RepeatOfRequestID", type text},
+					        {"FirstTimeFixFlag", Int64.Type},
+					        {"InvoiceID", type text},
+					        {"IsInvoiced", Int64.Type},
+					        {"BillingType", type text},
+					        {"WorkHours", type number},
+					        {"LabourCost", Currency.Type},
+					        {"PartsCost", Currency.Type},
+					        {"ServiceRevenue", Currency.Type},
+					        {"CSATScore", Int64.Type},
+					        {"DQ_MissingTechnician", Int64.Type}
+					        },
+					        "en-CA")
+					in
+					    Typed
+
+		annotation PBI_ResultType = Table
+
+	table FactTargets
+		lineageTag: 56c7bc57-38c3-5bc8-952d-bfade63fa21a
+
+		column RegionKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 1c406bac-7bd7-5e19-90e3-f352afc957b2
+			summarizeBy: none
+			sourceColumn: RegionKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column MonthStartDateKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: f63326a2-69a2-529a-a6be-f18a5a937f49
+			summarizeBy: none
+			sourceColumn: MonthStartDateKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column RevenueTarget
+			dataType: decimal
+			isHidden
+			formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+			lineageTag: 5d90d560-6672-5bec-a333-a8b7127a9394
+			summarizeBy: sum
+			sourceColumn: RevenueTarget
+
+			annotation SummarizationSetBy = Automatic
+
+		column SLATarget
+			dataType: double
+			isHidden
+			formatString: #,0.00
+			lineageTag: 71456083-5503-5295-959d-6939b7482be5
+			summarizeBy: sum
+			sourceColumn: SLATarget
+
+			annotation SummarizationSetBy = Automatic
+
+		column CSATTarget
+			dataType: double
+			isHidden
+			formatString: #,0.00
+			lineageTag: 45d33b6d-72ed-54d1-bb53-eefe13b78493
+			summarizeBy: sum
+			sourceColumn: CSATTarget
+
+			annotation SummarizationSetBy = Automatic
+
+		column ProductivityTarget
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 970d0614-99c3-55fb-84c9-a67a908d9aa5
+			summarizeBy: sum
+			sourceColumn: ProductivityTarget
+
+			annotation SummarizationSetBy = Automatic
+
+		column BacklogTarget
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 7c5392f2-b07c-55e5-be74-debb45127245
+			summarizeBy: sum
+			sourceColumn: BacklogTarget
+
+			annotation SummarizationSetBy = Automatic
+
+		partition FactTargets = m
+			mode: import
+			source =
+					let
+					    Source = Csv.Document(
+					        File.Contents(ProjectFolder & "\data\model\FactTargets.csv"),
+					        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+					    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+					    Typed = Table.TransformColumnTypes(
+					        Promoted,
+					        {
+					        {"RegionKey", Int64.Type},
+					        {"MonthStartDateKey", Int64.Type},
+					        {"RevenueTarget", Currency.Type},
+					        {"SLATarget", type number},
+					        {"CSATTarget", type number},
+					        {"ProductivityTarget", Int64.Type},
+					        {"BacklogTarget", Int64.Type}
+					        },
+					        "en-CA")
+					in
+					    Typed
+
+		annotation PBI_ResultType = Table
+
+	table 'KPI Selector'
+		lineageTag: b7ba89a2-d621-5ffc-b50d-c67ff8e5608e
+
+		column KPI
+			dataType: string
+			lineageTag: 819978a0-f8dc-5357-9348-2409f5b1fb72
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: [KPI]
+			sortByColumn: Order
+
+			annotation SummarizationSetBy = Automatic
+
+		column Order
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 81dcb766-deed-5980-8c1d-d0156fdee5a1
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: [Order]
+
+			annotation SummarizationSetBy = Automatic
+
+		partition 'KPI Selector' = calculated
+			mode: import
+			source =
+					DATATABLE (
+					    "KPI", STRING, "Order", INTEGER,
+					    {
+					        { "Service Revenue", 1 },
+					        { "SLA Compliance %", 2 },
+					        { "Avg CSAT", 3 },
+					        { "Backlog", 4 },
+					        { "First-Time Fix Rate", 5 }
+					    }
+					)
+
+		annotation PBI_Id = kpi_selector
+
+	table SecurityUserRegion
+		lineageTag: f25c3b8e-ca1e-59c5-8c44-368bf691e929
+		isHidden
+
+		column UserEmail
+			dataType: string
+			lineageTag: e85b9dbb-bd9f-5cc0-af33-7225aac5f2b3
+			summarizeBy: none
+			sourceColumn: UserEmail
+
+			annotation SummarizationSetBy = Automatic
+
+		column RegionKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 6716e88f-c80a-50d1-85fa-960cdf971637
+			summarizeBy: none
+			sourceColumn: RegionKey
+
+			annotation SummarizationSetBy = Automatic
+
+		column Role
+			dataType: string
+			lineageTag: ebc98de2-8627-5f4d-994f-050083fbee19
+			summarizeBy: none
+			sourceColumn: Role
+
+			annotation SummarizationSetBy = Automatic
+
+		partition SecurityUserRegion = m
+			mode: import
+			source =
+					let
+					    Source = Csv.Document(
+					        File.Contents(ProjectFolder & "\data\model\SecurityUserRegion.csv"),
+					        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+					    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+					    Typed = Table.TransformColumnTypes(
+					        Promoted,
+					        {
+					        {"UserEmail", type text},
+					        {"RegionKey", Int64.Type},
+					        {"Role", type text}
+					        },
+					        "en-CA")
+					in
+					    Typed
+
+		annotation PBI_ResultType = Table
+
+	table _Measures
+		lineageTag: 6ac858df-c457-58fc-a9d4-fd86119e6e61
+
+		measure 'Total Requests' =
+				COUNTROWS ( FactServiceRequests )
+			formatString: #,0
+			displayFolder: 01 Volume
+			lineageTag: 210b6cca-cd5f-5563-8ae6-fb6ba7d448e7
+
+		measure 'Cancelled Requests' =
+				CALCULATE ( [Total Requests], FactServiceRequests[IsCancelled] = 1 )
+			formatString: #,0
+			displayFolder: 01 Volume
+			lineageTag: 17381bcc-ce2b-5fd5-86a3-fb3232ddfd46
+
+		measure 'Billable Workload' =
+				[Total Requests] - [Cancelled Requests]
+			formatString: #,0
+			displayFolder: 01 Volume
+			lineageTag: a7bba4b9-6950-5e21-a5a6-033458600383
+
+		measure 'Completed Requests' =
+				CALCULATE (
+				    [Total Requests],
+				    FactServiceRequests[IsClosed] = 1,
+				    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+				)
+			formatString: #,0
+			displayFolder: 01 Volume
+			lineageTag: 37c21cb4-8384-5d74-8e7a-7ee510bfd2d6
+
+		measure 'Open Requests (Current)' =
+				CALCULATE ( [Total Requests], FactServiceRequests[IsOpen] = 1, REMOVEFILTERS ( DimDate ) )
+			formatString: #,0
+			displayFolder: 01 Volume
+			lineageTag: 2314a292-ef0c-5953-ad31-a908b1a99308
+
+		/// Requests created on/before the last visible day and not closed by then.
+		/// Works at any grain (day/month/quarter) and with any slicer.
+		measure 'Backlog (Open at Period End)' =
+				VAR EndKey = MAX ( DimDate[DateKey] )
+				RETURN
+				    CALCULATE (
+				        [Total Requests],
+				        REMOVEFILTERS ( DimDate ),
+				        FactServiceRequests[CreatedDateKey] <= EndKey,
+				        FactServiceRequests[IsCancelled] = 0,
+				        FILTER (
+				            ALL ( FactServiceRequests[ClosedDateKey] ),
+				            ISBLANK ( FactServiceRequests[ClosedDateKey] )
+				                || FactServiceRequests[ClosedDateKey] > EndKey
+				        )
+				    )
+			formatString: #,0
+			displayFolder: 01 Volume
+			lineageTag: a9ce1b45-c4fb-50eb-8b87-ba85f4dab425
+
+		/// Semi-additive: take the LAST snapshot in the period, never sum across months.
+		measure 'Backlog (Month-End Snapshot)' =
+				VAR LastSnapshot = MAX ( FactBacklogSnapshot[SnapshotDateKey] )
+				RETURN
+				    CALCULATE (
+				        SUM ( FactBacklogSnapshot[OpenRequests] ),
+				        FactBacklogSnapshot[SnapshotDateKey] = LastSnapshot
+				    )
+			formatString: #,0
+			displayFolder: 01 Volume
+			lineageTag: c491bd39-ecb5-59f9-8f3b-e6b06d0e527f
+
+		measure 'Backlog PM' =
+				CALCULATE ( [Backlog (Month-End Snapshot)], DATEADD ( DimDate[Date], -1, MONTH ) )
+			formatString: #,0
+			displayFolder: 01 Volume
+			lineageTag: 2d5e3e87-c91e-5902-bbc6-64c5066e843c
+
+		measure 'Backlog Growth %' =
+				DIVIDE ( [Backlog (Month-End Snapshot)] - [Backlog PM], [Backlog PM] )
+			formatString: 0.0%
+			displayFolder: 01 Volume
+			lineageTag: 6e722758-2d86-573a-9797-f3d79f31864c
+
+		measure 'Open Breached SLA' =
+				VAR LastSnapshot = MAX ( FactBacklogSnapshot[SnapshotDateKey] )
+				RETURN
+				    CALCULATE (
+				        SUM ( FactBacklogSnapshot[OpenBreachedSLA] ),
+				        FactBacklogSnapshot[SnapshotDateKey] = LastSnapshot
+				    )
+			formatString: #,0
+			displayFolder: 01 Volume
+			lineageTag: 48637f19-ea3b-591c-a1d8-c301ac43683d
+
+		measure 'Requests PY' =
+				CALCULATE ( [Total Requests], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+			formatString: #,0
+			displayFolder: 01 Volume
+			lineageTag: 4759e770-5327-55eb-91ac-6a4dbc84a5f9
+
+		measure 'Requests YoY %' =
+				DIVIDE ( [Total Requests] - [Requests PY], [Requests PY] )
+			formatString: +0.0%;-0.0%;0.0%
+			displayFolder: 01 Volume
+			lineageTag: 28441989-b1ec-5bb3-a571-3fa486a500c3
+
+		measure 'SLA Met Requests' =
+				CALCULATE (
+				    SUM ( FactServiceRequests[SLAMet] ),
+				    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+				)
+			formatString: #,0
+			displayFolder: 02 Service Level
+			lineageTag: 20f92041-c915-5398-a326-43e3ba956f9f
+
+		measure 'SLA Measured Requests' =
+				CALCULATE (
+				    COUNT ( FactServiceRequests[SLAMet] ),
+				    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+				)
+			formatString: #,0
+			displayFolder: 02 Service Level
+			lineageTag: 53b0608c-9525-5f24-8baa-31c80728c73b
+
+		measure 'SLA Compliance %' =
+				DIVIDE ( [SLA Met Requests], [SLA Measured Requests] )
+			formatString: 0.0%
+			displayFolder: 02 Service Level
+			lineageTag: 1e09a843-c336-5b05-9769-04857adf654b
+
+		measure 'SLA Breaches' =
+				[SLA Measured Requests] - [SLA Met Requests]
+			formatString: #,0
+			displayFolder: 02 Service Level
+			lineageTag: 4be40d1c-2cab-5391-b984-9e5ca6fd711d
+
+		measure 'SLA Compliance % PY' =
+				CALCULATE ( [SLA Compliance %], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+			formatString: 0.0%
+			displayFolder: 02 Service Level
+			lineageTag: 69607e10-ef71-58c5-8f58-33263ebb9efa
+
+		/// Ratio of sums over the window - NOT an average of three monthly percentages.
+		measure 'SLA Compliance % Rolling 3M' =
+				CALCULATE (
+				    [SLA Compliance %],
+				    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -3, MONTH )
+				)
+			formatString: 0.0%
+			displayFolder: 02 Service Level
+			lineageTag: 6b3cc658-c783-5510-9da1-ef7b9b35d291
+
+		measure 'Avg Resolution Hours' =
+				CALCULATE (
+				    AVERAGE ( FactServiceRequests[ResolutionHours] ),
+				    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+				)
+			formatString: #,0.0
+			displayFolder: 02 Service Level
+			lineageTag: 8a6cbcd9-c66b-5077-80f4-717b5490698b
+
+		/// Median is robust to the few "waiting on parts" tickets that take weeks.
+		measure 'Median Resolution Hours' =
+				CALCULATE (
+				    MEDIAN ( FactServiceRequests[ResolutionHours] ),
+				    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+				)
+			formatString: #,0.0
+			displayFolder: 02 Service Level
+			lineageTag: 3f554fe2-7ed4-5a7d-8a22-a402eca8c867
+
+		measure 'P90 Resolution Hours' =
+				CALCULATE (
+				    PERCENTILE.INC ( FactServiceRequests[ResolutionHours], 0.9 ),
+				    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+				)
+			formatString: #,0.0
+			displayFolder: 02 Service Level
+			lineageTag: 36fea410-8080-5983-b3aa-5dbaf82eb973
+
+		/// FirstTimeFixFlag is blank until 30 days after closure, so DIVIDE/COUNT only
+		/// uses jobs whose outcome is actually known.
+		measure 'First-Time Fix Rate' =
+				CALCULATE (
+				    DIVIDE ( SUM ( FactServiceRequests[FirstTimeFixFlag] ), COUNT ( FactServiceRequests[FirstTimeFixFlag] ) ),
+				    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+				)
+			formatString: 0.0%
+			displayFolder: 02 Service Level
+			lineageTag: 7baa25fd-f017-50d8-89b0-bc547c589b62
+
+		measure 'Repeat Visits' =
+				SUM ( FactServiceRequests[RepeatVisitFlag] )
+			formatString: #,0
+			displayFolder: 02 Service Level
+			lineageTag: 4d439f59-5a30-5d6f-9fb4-aa37f632c9a2
+
+		measure 'Repeat Visit Rate' =
+				DIVIDE ( [Repeat Visits], [Billable Workload] )
+			formatString: 0.0%
+			displayFolder: 02 Service Level
+			lineageTag: 6dbbeb2a-3fee-5164-9747-f126d5c732f5
+
+		measure 'Avg CSAT' =
+				CALCULATE (
+				    AVERAGE ( FactServiceRequests[CSATScore] ),
+				    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+				)
+			formatString: 0.00
+			displayFolder: 03 Customer
+			lineageTag: 6f31d443-68a7-5c58-a1aa-bac20284fd75
+
+		measure 'Avg CSAT PY' =
+				CALCULATE ( [Avg CSAT], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+			formatString: 0.00
+			displayFolder: 03 Customer
+			lineageTag: 9e68c9b8-4139-55bf-a0bb-616b4cc3b5aa
+
+		measure 'CSAT Responses' =
+				CALCULATE (
+				    COUNT ( FactServiceRequests[CSATScore] ),
+				    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+				)
+			formatString: #,0
+			displayFolder: 03 Customer
+			lineageTag: 219677c4-daf5-502b-b459-4f13d8d14e27
+
+		measure 'CSAT Response Rate' =
+				DIVIDE ( [CSAT Responses], [Completed Requests] )
+			formatString: 0.0%
+			displayFolder: 03 Customer
+			lineageTag: d4a6034c-2d6c-51c9-acc5-d021110bb3f3
+
+		measure 'Low-CSAT Requests' =
+				CALCULATE ( [CSAT Responses], FactServiceRequests[CSATScore] <= 2 )
+			formatString: #,0
+			displayFolder: 03 Customer
+			lineageTag: 84de9f3f-3d52-5fb1-8b50-c3928d875833
+
+		measure 'Low-CSAT %' =
+				DIVIDE ( [Low-CSAT Requests], [CSAT Responses] )
+			formatString: 0.0%
+			displayFolder: 03 Customer
+			lineageTag: ae1be14a-9db2-54c8-849e-edc37b879ebf
+
+		measure 'Active Customers' =
+				CALCULATE ( DISTINCTCOUNT ( FactServiceRequests[CustomerKey] ) )
+			formatString: #,0
+			displayFolder: 03 Customer
+			lineageTag: 9feecde2-e6d0-5f76-8286-2cc9bd5b1112
+
+		/// Retention proxy: no request in the 180 days before the snapshot
+		measure 'Customers At Risk' =
+				CALCULATE ( COUNTROWS ( DimCustomer ), DimCustomer[ActivityStatus] = "At Risk (180d+)" )
+			formatString: #,0
+			displayFolder: 03 Customer
+			lineageTag: 200873bc-a8f6-571b-a47b-42ed53b45ddd
+
+		measure 'Customer Retention Proxy %' =
+				DIVIDE (
+				    CALCULATE ( COUNTROWS ( DimCustomer ), DimCustomer[ActivityStatus] = "Active" ),
+				    COUNTROWS ( DimCustomer )
+				)
+			formatString: 0.0%
+			displayFolder: 03 Customer
+			lineageTag: ba3eaa67-eab0-5850-8d51-a8684aa027cb
+
+		measure 'Service Revenue' =
+				SUM ( FactServiceRequests[ServiceRevenue] )
+			formatString: $#,0
+			displayFolder: 04 Financial
+			lineageTag: 46a3bb3e-0946-54b8-b372-7e16f6bdbaca
+
+		measure 'Labour Cost' =
+				SUM ( FactServiceRequests[LabourCost] )
+			formatString: $#,0
+			displayFolder: 04 Financial
+			lineageTag: b3da2128-17f0-5566-89d3-04d40452b3f0
+
+		measure 'Parts Cost' =
+				SUM ( FactServiceRequests[PartsCost] )
+			formatString: $#,0
+			displayFolder: 04 Financial
+			lineageTag: 3d4ea3cf-77aa-52e0-89a0-b8fb3dc470f7
+
+		measure 'Direct Cost' =
+				[Labour Cost] + [Parts Cost]
+			formatString: $#,0
+			displayFolder: 04 Financial
+			lineageTag: 22736448-792c-5f83-9910-db74a2de9bd9
+
+		measure 'Gross Margin' =
+				[Service Revenue] - [Direct Cost]
+			formatString: $#,0
+			displayFolder: 04 Financial
+			lineageTag: 4d381ab0-71b4-5815-bfb0-fa3510cca61d
+
+		measure 'Gross Margin %' =
+				DIVIDE ( [Gross Margin], [Service Revenue] )
+			formatString: 0.0%
+			displayFolder: 04 Financial
+			lineageTag: 5fdc7bd8-6bb2-5a32-bd42-d44021c47b67
+
+		measure 'Invoiced Requests' =
+				CALCULATE ( [Total Requests], FactServiceRequests[BillingType] = "Billable" )
+			formatString: #,0
+			displayFolder: 04 Financial
+			lineageTag: 57e62ef8-1536-5085-bbec-72887baebd81
+
+		measure 'Revenue per Request' =
+				DIVIDE ( [Service Revenue], [Invoiced Requests] )
+			formatString: $#,0
+			displayFolder: 04 Financial
+			lineageTag: 5a7f7e44-4dea-5997-9e36-65ce05bc84b8
+
+		measure 'Warranty Cost' =
+				CALCULATE ( [Direct Cost], FactServiceRequests[BillingType] = "Warranty" )
+			formatString: $#,0
+			displayFolder: 04 Financial
+			lineageTag: a5cfecb2-e0eb-510f-ad4c-76bfe32db25e
+
+		measure 'Warranty Cost % of Direct Cost' =
+				DIVIDE ( [Warranty Cost], [Direct Cost] )
+			formatString: 0.0%
+			displayFolder: 04 Financial
+			lineageTag: 196f91f5-6850-513b-9dcb-34c13c8a18c1
+
+		measure 'Revenue Contribution %' =
+				DIVIDE ( [Service Revenue], CALCULATE ( [Service Revenue], ALLSELECTED ( DimRegion ) ) )
+			formatString: 0.0%
+			displayFolder: 04 Financial
+			lineageTag: a89575cc-2ac9-5f26-82a5-45e1730cddaf
+
+		measure 'Customer Revenue Share %' =
+				DIVIDE ( [Service Revenue], CALCULATE ( [Service Revenue], ALLSELECTED ( DimCustomer ) ) )
+			formatString: 0.00%
+			displayFolder: 04 Financial
+			lineageTag: 66fbc706-69af-5d0d-a7c4-7d61c6bf7356
+
+		measure 'Revenue YTD' =
+				CALCULATE ( [Service Revenue], DATESYTD ( DimDate[Date] ) )
+			formatString: $#,0
+			displayFolder: 05 Time Intelligence
+			lineageTag: 2a313249-c205-5e21-be22-87999284b649
+
+		/// Fiscal year ends 31 March
+		measure 'Revenue FYTD' =
+				CALCULATE ( [Service Revenue], DATESYTD ( DimDate[Date], "3/31" ) )
+			formatString: $#,0
+			displayFolder: 05 Time Intelligence
+			lineageTag: 763ed236-a47c-5c8b-a028-4a44ed3347ec
+
+		measure 'Revenue PY' =
+				CALCULATE ( [Service Revenue], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+			formatString: $#,0
+			displayFolder: 05 Time Intelligence
+			lineageTag: e7c7c0b9-54b3-52ba-943b-45f1cf1e0ac7
+
+		measure 'Revenue YTD PY' =
+				CALCULATE ( [Revenue YTD], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+			formatString: $#,0
+			displayFolder: 05 Time Intelligence
+			lineageTag: 1c9c2828-a418-5977-83c9-e5115f61f795
+
+		measure 'Revenue YoY %' =
+				DIVIDE ( [Service Revenue] - [Revenue PY], [Revenue PY] )
+			formatString: +0.0%;-0.0%;0.0%
+			displayFolder: 05 Time Intelligence
+			lineageTag: ba81c40b-9c03-5b9f-8b30-b70041bdffe9
+
+		measure 'Revenue YTD YoY %' =
+				DIVIDE ( [Revenue YTD] - [Revenue YTD PY], [Revenue YTD PY] )
+			formatString: +0.0%;-0.0%;0.0%
+			displayFolder: 05 Time Intelligence
+			lineageTag: 493978b5-57a1-5b28-a8e8-ce985d50e2f3
+
+		measure 'Revenue PM' =
+				CALCULATE ( [Service Revenue], DATEADD ( DimDate[Date], -1, MONTH ) )
+			formatString: $#,0
+			displayFolder: 05 Time Intelligence
+			lineageTag: 79da289d-69a5-540d-bd29-570e26cb2317
+
+		measure 'Revenue MoM %' =
+				DIVIDE ( [Service Revenue] - [Revenue PM], [Revenue PM] )
+			formatString: +0.0%;-0.0%;0.0%
+			displayFolder: 05 Time Intelligence
+			lineageTag: 342b93fb-f98e-5f5c-b835-7d8e27c553ef
+
+		measure 'Rolling 3-Month Revenue' =
+				CALCULATE (
+				    [Service Revenue],
+				    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -3, MONTH )
+				)
+			formatString: $#,0
+			displayFolder: 05 Time Intelligence
+			lineageTag: fa4311ab-e410-5da8-b1a8-2f856e454e50
+
+		measure 'Rolling 12-Month Revenue' =
+				CALCULATE (
+				    [Service Revenue],
+				    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -12, MONTH )
+				)
+			formatString: $#,0
+			displayFolder: 05 Time Intelligence
+			lineageTag: 31dbfd9a-b1e8-52f4-a755-32a1a0db0d4f
+
+		measure 'Revenue Target' =
+				SUM ( FactTargets[RevenueTarget] )
+			formatString: $#,0
+			displayFolder: 06 Targets & Performance
+			lineageTag: 20854ad5-3d8a-5ef1-a579-8d996386a2b4
+
+		measure 'Revenue Variance' =
+				[Service Revenue] - [Revenue Target]
+			formatString: $#,0;($#,0)
+			displayFolder: 06 Targets & Performance
+			lineageTag: 5acc5a62-63d4-5257-95f9-4847870ab1d5
+
+		measure 'Revenue Achievement %' =
+				DIVIDE ( [Service Revenue], [Revenue Target] )
+			formatString: 0.0%
+			displayFolder: 06 Targets & Performance
+			lineageTag: 39f7a9a1-6749-593c-b3c5-1c530198880a
+
+		/// Average of the regional SLA targets in the current filter
+		/// (90% for most regions, 92% for Toronto).
+		measure 'SLA Target' =
+				AVERAGE ( FactTargets[SLATarget] )
+			formatString: 0.0%
+			displayFolder: 06 Targets & Performance
+			lineageTag: 99297bda-5295-5f01-a588-e15f5ed07430
+
+		measure 'SLA Variance (pts)' =
+				[SLA Compliance %] - [SLA Target]
+			formatString: +0.0%;-0.0%;0.0%
+			displayFolder: 06 Targets & Performance
+			lineageTag: ad0a065b-629a-577e-9e84-9305b0bea903
+
+		measure 'CSAT Target' =
+				AVERAGE ( FactTargets[CSATTarget] )
+			formatString: 0.00
+			displayFolder: 06 Targets & Performance
+			lineageTag: a86e3723-fd54-58f8-b2f3-5b09f7c5d427
+
+		measure 'CSAT Variance' =
+				[Avg CSAT] - [CSAT Target]
+			formatString: +0.00;-0.00;0.00
+			displayFolder: 06 Targets & Performance
+			lineageTag: 1a477dc3-e6b8-5dd5-a093-a1506e8ad541
+
+		measure 'Backlog Target' =
+				VAR LastMonth = INT ( MAX ( FactBacklogSnapshot[SnapshotDateKey] ) / 100 )   // e.g. 202609
+				RETURN
+				    CALCULATE (
+				        SUM ( FactTargets[BacklogTarget] ),
+				        REMOVEFILTERS ( DimDate ),
+				        INT ( FactTargets[MonthStartDateKey] / 100 ) = LastMonth
+				    )
+			formatString: #,0
+			displayFolder: 06 Targets & Performance
+			lineageTag: 6e88d115-e535-5c6a-ad16-b9f28ffc5363
+
+		measure 'Backlog vs Target' =
+				[Backlog (Month-End Snapshot)] - [Backlog Target]
+			formatString: +#,0;-#,0;0
+			displayFolder: 06 Targets & Performance
+			lineageTag: a984dbe0-e2dc-5757-b455-c2f2fc9322c3
+
+		measure 'Active Technicians' =
+				CALCULATE (
+				    DISTINCTCOUNT ( FactServiceRequests[TechnicianKey] ),
+				    FactServiceRequests[TechnicianKey] > 0,
+				    FactServiceRequests[IsClosed] = 1,
+				    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+				)
+			formatString: #,0
+			displayFolder: 06 Targets & Performance
+			lineageTag: 1343db11-c69a-5cf0-9b82-3d8c9f6b7d0b
+
+		/// Average over months so a full year is not divided by one headcount.
+		measure 'Completed per Technician per Month' =
+				AVERAGEX (
+				    VALUES ( DimDate[YearMonthKey] ),
+				    DIVIDE ( [Completed Requests], [Active Technicians] )
+				)
+			formatString: #,0.0
+			displayFolder: 06 Targets & Performance
+			lineageTag: 79b70235-e2f2-5510-b7b4-7645ac28f38c
+
+		measure 'Productivity Target' =
+				AVERAGE ( FactTargets[ProductivityTarget] )
+			formatString: #,0
+			displayFolder: 06 Targets & Performance
+			lineageTag: feb8e45e-ea9c-561a-9f3a-4d6c9296dd1b
+
+		measure 'Revenue per Technician' =
+				DIVIDE (
+				    CALCULATE (
+				        [Service Revenue],
+				        USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+				    ),
+				    [Active Technicians]
+				)
+			formatString: $#,0
+			displayFolder: 06 Targets & Performance
+			lineageTag: a0231413-fafa-544f-986e-8cc6c9287e50
+
+		/// Composite 0-100 score: each KPI scored vs target, capped at 110% so one
+		/// great number cannot hide a bad one. Equal weights (document them!).
+		measure 'Regional Performance Score' =
+				VAR RevScore     = MIN ( [Revenue Achievement %], 1.1 )
+				VAR SLAScore     = MIN ( DIVIDE ( [SLA Compliance %], [SLA Target] ), 1.1 )
+				VAR CSATScore    = MIN ( DIVIDE ( [Avg CSAT], [CSAT Target] ), 1.1 )
+				VAR BacklogScore = MIN ( DIVIDE ( [Backlog Target], [Backlog (Month-End Snapshot)] ), 1.1 )
+				RETURN
+				    ( RevScore + SLAScore + CSATScore + BacklogScore ) / 4 * 100
+			formatString: 0
+			displayFolder: 06 Targets & Performance
+			lineageTag: 8a8bbb23-6f87-5fde-a0ac-49c203e93295
+
+		measure 'Region Rank (SLA)' =
+				IF (
+				    ISINSCOPE ( DimRegion[Region] ),
+				    RANKX ( ALLSELECTED ( DimRegion[Region] ), [SLA Compliance %], , DESC, DENSE )
+				)
+			formatString: 0
+			displayFolder: 07 Ranking
+			lineageTag: 8fe1aa19-8427-5b5e-bf31-23ad0db5803b
+
+		measure 'Region Rank (Revenue)' =
+				IF (
+				    ISINSCOPE ( DimRegion[Region] ),
+				    RANKX ( ALLSELECTED ( DimRegion[Region] ), [Service Revenue], , DESC, DENSE )
+				)
+			formatString: 0
+			displayFolder: 07 Ranking
+			lineageTag: 11b45679-030e-5c27-81c0-6aea3e1258e9
+
+		/// Only rank technicians with enough jobs to be statistically meaningful,
+		/// and rank within whatever region/skill filter is applied.
+		measure 'Technician Rank (FTF)' =
+				VAR MinJobs = 150
+				RETURN
+				    IF (
+				        ISINSCOPE ( DimTechnician[TechnicianName] ) && [Completed Requests] >= MinJobs,
+				        RANKX (
+				            FILTER (
+				                ALLSELECTED ( DimTechnician[TechnicianName] ),
+				                [Completed Requests] >= MinJobs
+				            ),
+				            [First-Time Fix Rate], , DESC, DENSE
+				        )
+				    )
+			formatString: 0
+			displayFolder: 07 Ranking
+			lineageTag: 88a93c60-b23d-5c06-9ece-7f671aa0cd09
+
+		measure 'Technician Rank (Revenue)' =
+				IF (
+				    ISINSCOPE ( DimTechnician[TechnicianName] ),
+				    RANKX ( ALLSELECTED ( DimTechnician[TechnicianName] ), [Revenue per Technician], , DESC, DENSE )
+				)
+			formatString: 0
+			displayFolder: 07 Ranking
+			lineageTag: 2c71d8f4-8161-5f58-9b62-f57e366eccfe
+
+		measure 'Emergency Repair Requests' =
+				CALCULATE ( [Total Requests], DimServiceType[ServiceType] = "Emergency Repair" )
+			formatString: #,0
+			displayFolder: 08 Root Cause
+			lineageTag: 8b4e1cd7-7eee-530d-8d6d-1f24d9d37312
+
+		measure 'Emergency Share of Volume' =
+				DIVIDE ( [Emergency Repair Requests], [Total Requests] )
+			formatString: 0.0%
+			displayFolder: 08 Root Cause
+			lineageTag: cd35ea66-1071-5274-a1bd-5400acaa30ed
+
+		measure 'Emergency Repair YoY %' =
+				VAR PY = CALCULATE ( [Emergency Repair Requests], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+				RETURN DIVIDE ( [Emergency Repair Requests] - PY, PY )
+			formatString: +0.0%;-0.0%;0.0%
+			displayFolder: 08 Root Cause
+			lineageTag: 65fc647e-e8bb-5cd7-afcf-ebfdd81e001c
+
+		measure 'Requests per Active Technician' =
+				DIVIDE ( [Total Requests], [Active Technicians] )
+			formatString: #,0.0
+			displayFolder: 08 Root Cause
+			lineageTag: 4b68193e-7c83-5d45-9b54-7d49e3596c10
+
+		measure 'SLA Compliance % (All Regions)' =
+				CALCULATE ( [SLA Compliance %], REMOVEFILTERS ( DimRegion ) )
+			formatString: 0.0%
+			displayFolder: 08 Root Cause
+			lineageTag: 0a827db9-ef1e-5a6a-bd18-5ab5cd95b6ec
+
+		measure 'SLA Gap vs Company' =
+				[SLA Compliance %] - [SLA Compliance % (All Regions)]
+			formatString: +0.0%;-0.0%;0.0%
+			displayFolder: 08 Root Cause
+			lineageTag: 0ec1f375-2a4d-583a-9bb3-ee31d473c02b
+
+		measure 'Regions Below SLA Target' =
+				COUNTROWS ( FILTER ( VALUES ( DimRegion[Region] ), [SLA Compliance %] < [SLA Target] ) )
+			formatString: 0
+			displayFolder: 08 Root Cause
+			lineageTag: a828601d-2c84-516b-8206-dda9776ad5d6
+
+		measure 'Selected KPI Value' =
+				SWITCH (
+				    SELECTEDVALUE ( 'KPI Selector'[KPI], "Service Revenue" ),
+				    "Service Revenue",      [Service Revenue],
+				    "SLA Compliance %",     [SLA Compliance %],
+				    "Avg CSAT",             [Avg CSAT],
+				    "Backlog",              [Backlog (Month-End Snapshot)],
+				    "First-Time Fix Rate",  [First-Time Fix Rate]
+				)
+			displayFolder: 09 Dynamic / UX
+			lineageTag: d2d83ef7-d35d-5d94-a47c-8a51638ad148
+
+		measure 'Selected KPI Title' =
+				SELECTEDVALUE ( 'KPI Selector'[KPI], "Service Revenue" ) & " by Month - "
+				    & SELECTEDVALUE ( DimRegion[Region], "All Regions" )
+			displayFolder: 09 Dynamic / UX
+			lineageTag: 4abba9e4-ccb9-5b74-8691-c47d4631d583
+
+		/// Use in Conditional formatting > Field value
+		measure 'SLA Status Color' =
+				VAR Gap = [SLA Variance (pts)]
+				RETURN
+				    SWITCH ( TRUE (), ISBLANK ( Gap ), BLANK (), Gap >= 0, "#2E7D32", Gap >= -0.03, "#8A5300", "#B71C1C" )
+			displayFolder: 09 Dynamic / UX
+			lineageTag: d9fa75c2-0a57-5c5b-ad8f-8b78b0b6a2f8
+
+		/// Light red background for regions more than 3 pts below their SLA target.
+		/// Use in Conditional formatting > Background color > Field value on every table column.
+		measure 'Row Highlight Color' =
+				IF ( [SLA Variance (pts)] < -0.03, "#FDECEC" )
+			displayFolder: 09 Dynamic / UX
+			lineageTag: d119d8c1-7b4a-5c95-b72a-b9cf0567cca0
+
+		measure 'SLA Status Icon' =
+				VAR Gap = [SLA Variance (pts)]
+				RETURN
+				    SWITCH ( TRUE (), ISBLANK ( Gap ), BLANK (), Gap >= 0, "● On target", Gap >= -0.03, "▲ Watch", "▼ Below target" )
+			displayFolder: 09 Dynamic / UX
+			lineageTag: 87e0d50f-a5b8-54a3-9a8f-b9f78ca4b917
+
+		measure 'Data As Of' =
+				"Data as of " & FORMAT ( MAX ( FactServiceRequests[CreatedAt] ), "d mmm yyyy" )
+			displayFolder: 09 Dynamic / UX
+			lineageTag: bbfa5f0c-9f99-5c1d-8cd5-3b56c6e9bddb
+
+		measure 'Report Title Region' =
+				"Regional Performance - " & SELECTEDVALUE ( DimRegion[Region], "All Regions" )
+			displayFolder: 09 Dynamic / UX
+			lineageTag: c4d71b21-a28c-585f-a41e-4c4a5a81db8b
+
+		measure 'Card Sub Revenue' =
+				VAR v = [Revenue YoY %]
+				RETURN IF ( v >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( v ), "0.0%" ) & " vs PY"
+			displayFolder: 10 Card Labels
+			lineageTag: 3c6acc6f-47d7-559b-b890-0655b9cbf192
+
+		measure 'Card Sub SLA' =
+				VAR d = [SLA Compliance %] - [SLA Compliance % PY]
+				RETURN
+				    "Target " & FORMAT ( [SLA Target], "0.0%" ) & " · "
+				        & IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ) * 100, "0.0" ) & " pts vs PY"
+			displayFolder: 10 Card Labels
+			lineageTag: 553dcbe2-0f52-5f2d-b146-f53b12de921a
+
+		measure 'Card Sub CSAT' =
+				"Target " & FORMAT ( [CSAT Target], "0.00" ) & " · PY " & FORMAT ( [Avg CSAT PY], "0.00" )
+			displayFolder: 10 Card Labels
+			lineageTag: e5f4d1e2-71fc-5943-a907-937886e44bd7
+
+		measure 'Card Sub Backlog' =
+				VAR d = [Backlog vs Target]
+				RETURN
+				    IF ( d > 0, "▲ " & d & " over target (", "▼ " & ABS ( d ) & " under target (" )
+				        & [Backlog Target] & ")"
+			displayFolder: 10 Card Labels
+			lineageTag: fca62137-d7a1-5734-ab8d-11e6ff70980d
+
+		measure 'Card Sub Resolution' =
+				"PY " & FORMAT ( CALCULATE ( [Avg Resolution Hours], SAMEPERIODLASTYEAR ( DimDate[Date] ) ), "0.0" ) & " h"
+			displayFolder: 10 Card Labels
+			lineageTag: 55d3b60f-d5e8-580c-b558-46b9cc55dc83
+
+		measure 'Card Sub Completed' =
+				VAR py = CALCULATE ( [Completed Requests], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+				VAR v = DIVIDE ( [Completed Requests] - py, py )
+				RETURN IF ( v >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( v ), "0.0%" ) & " vs PY"
+			displayFolder: 10 Card Labels
+			lineageTag: dabe978c-238e-5c54-8358-fc399527d79e
+
+		measure 'Card Color Revenue' =
+				IF ( [Revenue YoY %] >= 0, "#2E7D32", "#B71C1C" )
+			displayFolder: 10 Card Labels
+			lineageTag: c85a6890-129f-502d-a306-67966228cb06
+
+		measure 'Card Color Backlog' =
+				IF ( [Backlog vs Target] > 0, "#B71C1C", "#2E7D32" )
+			displayFolder: 10 Card Labels
+			lineageTag: e3973aa2-7163-5200-a0d2-222ec0a59606
+
+		measure 'Card Color Completed' =
+				VAR py = CALCULATE ( [Completed Requests], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+				RETURN IF ( [Completed Requests] >= py, "#2E7D32", "#B71C1C" )
+			displayFolder: 10 Card Labels
+			lineageTag: 219cc06c-e46c-5e40-95f9-b7d0c0f5174d
+
+		column Value
+			dataType: int64
+			isHidden
+			formatString: 0
+			lineageTag: 088679ef-b233-56d4-b64e-e2de177cbf0f
+			summarizeBy: none
+			isNameInferred
+			sourceColumn: [Value]
+
+			annotation SummarizationSetBy = Automatic
+
+		partition _Measures = calculated
+			mode: import
+			source = ROW ( "Value", 0 )
+
+		annotation PBI_Id = measures
+
+	relationship 5f51ac63-6add-58c3-a002-d14842a1e160
+		fromColumn: FactServiceRequests.CustomerKey
+		toColumn: DimCustomer.CustomerKey
+
+	relationship c7594791-5d7f-5d8a-b111-a66cac764aa7
+		fromColumn: FactServiceRequests.TechnicianKey
+		toColumn: DimTechnician.TechnicianKey
+
+	relationship 85fe3b7f-c98b-5d2f-8e63-fa26c7c7f881
+		fromColumn: FactServiceRequests.RegionKey
+		toColumn: DimRegion.RegionKey
+
+	relationship 944881cc-2e9b-5d8f-bece-630b0f854b3c
+		fromColumn: FactServiceRequests.ServiceTypeKey
+		toColumn: DimServiceType.ServiceTypeKey
+
+	relationship 9c64f394-f459-5dc2-b492-f15e744c27a1
+		fromColumn: FactServiceRequests.PriorityKey
+		toColumn: DimPriority.PriorityKey
+
+	relationship b45ee4db-ee24-57fe-a482-78a157fc621e
+		fromColumn: FactServiceRequests.CreatedDateKey
+		toColumn: DimDate.DateKey
+
+	relationship 5af05002-2939-5bb2-9f00-1c2ee540d154
+		isActive: false
+		fromColumn: FactServiceRequests.ClosedDateKey
+		toColumn: DimDate.DateKey
+
+	relationship 44ef4983-6519-5a8e-a412-d8f63b911eb3
+		fromColumn: FactTargets.RegionKey
+		toColumn: DimRegion.RegionKey
+
+	relationship 19ee5a4f-4468-5ee7-accf-f50fd9669868
+		fromColumn: FactTargets.MonthStartDateKey
+		toColumn: DimDate.DateKey
+
+	relationship 66ceec85-eb06-5200-921b-bfbbe358c427
+		fromColumn: FactBacklogSnapshot.RegionKey
+		toColumn: DimRegion.RegionKey
+
+	relationship c0d83e94-8328-5689-9d45-4b05bc3e7b66
+		fromColumn: FactBacklogSnapshot.SnapshotDateKey
+		toColumn: DimDate.DateKey
+
+	role 'Regional Manager'
+		modelPermission: read
+
+		tablePermission DimRegion =
+				DimRegion[RegionKey]
+				    IN CALCULATETABLE (
+				        VALUES ( SecurityUserRegion[RegionKey] ),
+				        SecurityUserRegion[UserEmail] = USERPRINCIPALNAME ()
+				    )
+
+		annotation PBI_Id = 91b0dc26-c96d-518a-89e5-5d6a1b8b0977

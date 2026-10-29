@@ -1,0 +1,8 @@
+check_name,rows_flagged
+FSM exact duplicate rows,640
+FSM null CustomerID,211
+FSM invalid CreatedAt,131
+FSM non-standard region name,3859
+FSM closed without technician,321
+Billing negative amounts,160
+CSAT outside 1-5,262

@@ -1,0 +1,9 @@
+ServiceTypeKey,ServiceCategory,ServiceType,ListPrice2024
+1,Repair,Standard Repair,420
+2,Repair,Emergency Repair,780
+3,Maintenance,Preventive Maintenance,310
+4,Maintenance,Scheduled Maintenance,280
+5,Inspection,Safety Inspection,220
+6,Inspection,Compliance Inspection,260
+7,Installation,New Installation,1150
+8,Installation,Equipment Upgrade,890

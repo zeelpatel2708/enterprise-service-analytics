@@ -1,0 +1,13 @@
+Edition,Bucket,BucketOrder,ShareOfClosed
+Simulated,Same day,1,0.1629
+Simulated,1–2 days,2,0.5905
+Simulated,3–7 days,3,0.2408
+Simulated,8–30 days,4,0.0052
+Simulated,31–90 days,5,0.0006
+Simulated,Over 90 days,6,0.0
+Real (Calgary),Same day,1,0.1948
+Real (Calgary),1–2 days,2,0.2833
+Real (Calgary),3–7 days,3,0.2511
+Real (Calgary),8–30 days,4,0.1773
+Real (Calgary),31–90 days,5,0.0622
+Real (Calgary),Over 90 days,6,0.0314

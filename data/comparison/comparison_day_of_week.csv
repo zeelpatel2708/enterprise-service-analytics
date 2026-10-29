@@ -1,0 +1,15 @@
+Edition,DayOfWeekNumber,DayOfWeek,ShareOfRequests
+Simulated,1,Monday,0.203
+Simulated,2,Tuesday,0.1751
+Simulated,3,Wednesday,0.1654
+Simulated,4,Thursday,0.1644
+Simulated,5,Friday,0.1653
+Simulated,6,Saturday,0.0747
+Simulated,7,Sunday,0.0522
+Real (Calgary),1,Monday,0.1614
+Real (Calgary),2,Tuesday,0.1847
+Real (Calgary),3,Wednesday,0.1773
+Real (Calgary),4,Thursday,0.1731
+Real (Calgary),5,Friday,0.1545
+Real (Calgary),6,Saturday,0.0781
+Real (Calgary),7,Sunday,0.0709

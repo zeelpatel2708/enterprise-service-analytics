@@ -1,0 +1,13 @@
+Metric,Simulated,Real (Calgary)
+Requests in window,75909.0,1384094.0
+Average requests per month,2300.0,41942.0
+YoY volume growth 2025 vs 2024,0.0652,-0.0525
+Weekend share of requests,0.1268,0.149
+Peak-month seasonality index,1.067,1.287
+Trough-month seasonality index,0.923,0.782
+Median resolution (days),2.0,3.0
+P90 resolution (days),4.0,29.0
+Closed same day,0.1629,0.1948
+Closed within 7 days,0.9942,0.7291
+Avg month-end backlog ÷ monthly intake,0.059,0.846
+Share excluded (cancelled / duplicate),0.0173,0.0099

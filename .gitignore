@@ -1,0 +1,28 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local warehouse (rebuilt by run_pipeline.py)
+data/warehouse.db
+
+# Power BI temp / backup files
+*.pbix.bak
+~$*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Edition B (real Calgary data): large files are re-created by
+# src/calgary/download_calgary_311.py + run_calgary_pipeline.py
+data/calgary/raw/
+data/calgary/processed/
+data/calgary/quarantine/
+data/calgary/model/FactServiceRequests.csv
+data/calgary/*.db
+
+# Power BI project local files
+powerbi/pbip/**/.pbi/localSettings.json
+powerbi/pbip/**/.pbi/cache.abf

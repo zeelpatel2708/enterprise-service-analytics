@@ -1,0 +1,5 @@
+rule,violations
+Closed before requested,0
+Open with ClosedDateKey,0
+Orphan ServiceTypeKey,0
+Orphan CommunityKey,0

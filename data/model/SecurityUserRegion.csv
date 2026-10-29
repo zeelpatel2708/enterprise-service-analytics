@@ -1,0 +1,19 @@
+UserEmail,RegionKey,Role
+priya.raman@northline.example,1,Regional Manager
+daniel.okafor@northline.example,2,Regional Manager
+sophie.tremblay@northline.example,3,Regional Manager
+marcus.bell@northline.example,4,Regional Manager
+hannah.schultz@northline.example,5,Regional Manager
+owen.fraser@northline.example,6,Regional Manager
+ceo@northline.example,1,Executive
+ceo@northline.example,2,Executive
+ceo@northline.example,3,Executive
+ceo@northline.example,4,Executive
+ceo@northline.example,5,Executive
+ceo@northline.example,6,Executive
+vp.operations@northline.example,1,Operations Manager
+vp.operations@northline.example,2,Operations Manager
+vp.operations@northline.example,3,Operations Manager
+vp.operations@northline.example,4,Operations Manager
+vp.operations@northline.example,5,Operations Manager
+vp.operations@northline.example,6,Operations Manager

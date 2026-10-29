@@ -1,0 +1,5 @@
+Priority,SLAHours,EffectiveFrom
+Critical,8,2020-01-01
+High,24,2020-01-01
+Medium,72,2020-01-01
+Low,120,2020-01-01

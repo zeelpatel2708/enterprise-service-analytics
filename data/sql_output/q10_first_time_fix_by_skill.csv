@@ -1,0 +1,17 @@
+SkillLevel,ServiceCategory,measurable_jobs,first_time_fix_rate
+Junior,Inspection,3934,0.8564
+Intermediate,Inspection,3807,0.8915
+Senior,Inspection,2280,0.9395
+Expert,Inspection,664,0.9307
+Junior,Installation,3503,0.7982
+Intermediate,Installation,3463,0.8507
+Senior,Installation,2150,0.886
+Expert,Installation,599,0.9115
+Junior,Maintenance,8070,0.8513
+Intermediate,Maintenance,8109,0.9084
+Senior,Maintenance,4838,0.9365
+Expert,Maintenance,1325,0.9381
+Junior,Repair,11027,0.8778
+Intermediate,Repair,10276,0.9101
+Senior,Repair,5839,0.9294
+Expert,Repair,1626,0.9434

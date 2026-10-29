@@ -1,0 +1,5 @@
+PriorityKey,Priority,SLAHours,PriceMultiplier,SortOrder
+1,Critical,8,1.5,1
+2,High,24,1.2,2
+3,Medium,72,1.0,3
+4,Low,120,0.95,4

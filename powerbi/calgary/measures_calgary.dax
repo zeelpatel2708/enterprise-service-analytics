@@ -1,0 +1,254 @@
+// =============================================================================
+// measures_calgary.dax - Edition B (real City of Calgary 311 data)
+//
+// Same patterns as Edition A (powerbi/measures.dax) so you can show the semantic
+// layer is reusable. Paste into a "_Measures" table, as in Edition A.
+//
+// RELATIONSHIPS
+//   FactServiceRequests[ServiceTypeKey]   -> DimServiceType[ServiceTypeKey]
+//   FactServiceRequests[CommunityKey]     -> DimCommunity[CommunityKey]
+//   FactServiceRequests[ChannelKey]       -> DimChannel[ChannelKey]
+//   FactServiceRequests[RequestedDateKey] -> DimDate[DateKey]          ACTIVE
+//   FactServiceRequests[ClosedDateKey]    -> DimDate[DateKey]          INACTIVE
+//   FactBacklogSnapshot[ServiceTypeKey]   -> DimServiceType[ServiceTypeKey]
+//   FactBacklogSnapshot[SnapshotDateKey]  -> DimDate[DateKey]
+//   Mark DimDate as date table on DimDate[Date].
+//
+// Volume is counted on the REQUESTED date; resolution and benchmark on the CLOSED date.
+// =============================================================================
+
+// ------------------------------------------------------------ 01 Volume -----
+
+Total Requests =
+COUNTROWS ( FactServiceRequests )
+// [Format: #,0]
+
+Closed Requests =
+CALCULATE (
+    COUNTROWS ( FactServiceRequests ),
+    FactServiceRequests[IsClosed] = 1,
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// [Format: #,0]
+
+Open Requests (Current) =
+CALCULATE ( COUNTROWS ( FactServiceRequests ), FactServiceRequests[IsOpen] = 1, REMOVEFILTERS ( DimDate ) )
+// [Format: #,0]
+
+Backlog (Month-End Snapshot) =
+VAR LastSnapshot = MAX ( FactBacklogSnapshot[SnapshotDateKey] )
+RETURN
+    CALCULATE ( SUM ( FactBacklogSnapshot[OpenRequests] ), FactBacklogSnapshot[SnapshotDateKey] = LastSnapshot )
+// Semi-additive  [Format: #,0]
+
+Backlog Over 90 Days =
+VAR LastSnapshot = MAX ( FactBacklogSnapshot[SnapshotDateKey] )
+RETURN
+    CALCULATE ( SUM ( FactBacklogSnapshot[OpenOver90Days] ), FactBacklogSnapshot[SnapshotDateKey] = LastSnapshot )
+// [Format: #,0]
+
+Backlog Over 90 Days % =
+DIVIDE ( [Backlog Over 90 Days], [Backlog (Month-End Snapshot)] )
+// [Format: 0.0%]
+
+Stale Open Requests (>365d) =
+CALCULATE ( COUNTROWS ( FactServiceRequests ), FactServiceRequests[IsStaleOpen] = 1, REMOVEFILTERS ( DimDate ) )
+// [Format: #,0]
+
+Requests PY =
+CALCULATE ( [Total Requests], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+// [Format: #,0]
+
+Requests YoY % =
+DIVIDE ( [Total Requests] - [Requests PY], [Requests PY] )
+// [Format: +0.0%;-0.0%;0.0%]
+
+Requests PM =
+CALCULATE ( [Total Requests], DATEADD ( DimDate[Date], -1, MONTH ) )
+// [Format: #,0]
+
+Requests MoM % =
+DIVIDE ( [Total Requests] - [Requests PM], [Requests PM] )
+// [Format: +0.0%;-0.0%;0.0%]
+
+Requests YTD =
+CALCULATE ( [Total Requests], DATESYTD ( DimDate[Date] ) )
+// [Format: #,0]
+
+Rolling 12-Month Requests =
+CALCULATE ( [Total Requests], DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -12, MONTH ) )
+// [Format: #,0]
+
+Avg Requests per Day =
+DIVIDE ( [Total Requests], COUNTROWS ( DimDate ) )
+// [Format: #,0]
+
+// ------------------------------------------------------- 02 Service Level --
+
+Avg Resolution Days =
+CALCULATE (
+    AVERAGE ( FactServiceRequests[ResolutionDays] ),
+    FactServiceRequests[IsDuplicateRequest] = 0,
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// [Format: #,0.0]
+
+Median Resolution Days =
+CALCULATE (
+    MEDIAN ( FactServiceRequests[ResolutionDays] ),
+    FactServiceRequests[IsDuplicateRequest] = 0,
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// [Format: #,0.0]
+
+P90 Resolution Days =
+CALCULATE (
+    PERCENTILE.INC ( FactServiceRequests[ResolutionDays], 0.9 ),
+    FactServiceRequests[IsDuplicateRequest] = 0,
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// [Format: #,0]
+
+Same-Day Closure % =
+CALCULATE (
+    DIVIDE ( SUM ( FactServiceRequests[SameDayClosure] ), COUNT ( FactServiceRequests[SameDayClosure] ) ),
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// [Format: 0.0%]
+
+Within Benchmark % =
+// Share closed within the service's 2024 P80 resolution time (derived benchmark).
+CALCULATE (
+    DIVIDE ( SUM ( FactServiceRequests[WithinBenchmark] ), COUNT ( FactServiceRequests[WithinBenchmark] ) ),
+    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+)
+// [Format: 0.0%]
+
+Within Benchmark % PY =
+CALCULATE ( [Within Benchmark %], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+// [Format: 0.0%]
+
+Benchmark Change (pts) =
+[Within Benchmark %] - [Within Benchmark % PY]
+// [Format: +0.0%;-0.0%;0.0%]
+
+Within Benchmark % Rolling 3M =
+CALCULATE ( [Within Benchmark %], DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -3, MONTH ) )
+// [Format: 0.0%]
+
+Benchmark Status Color =
+VAR Chg = [Benchmark Change (pts)]
+RETURN SWITCH ( TRUE (), ISBLANK ( Chg ), BLANK (), Chg >= 0, "#2E7D32", Chg >= -0.03, "#F2A900", "#C62828" )
+
+// --------------------------------------------------------------- 03 Mix -----
+
+Digital Share % =
+DIVIDE ( CALCULATE ( [Total Requests], DimChannel[ChannelGroup] = "Digital" ), [Total Requests] )
+// [Format: 0.0%]
+
+Digital Share % PY =
+CALCULATE ( [Digital Share %], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+// [Format: 0.0%]
+
+Share of Requests % =
+DIVIDE ( [Total Requests], CALCULATE ( [Total Requests], ALLSELECTED ( DimServiceType ) ) )
+// [Format: 0.0%]
+
+Weekend Share % =
+DIVIDE ( CALCULATE ( [Total Requests], DimDate[IsWeekend] = 1 ), [Total Requests] )
+// [Format: 0.0%]
+
+Seasonality Index =
+// This month's volume vs the average month in the selected years
+VAR ThisMonth = [Total Requests]
+VAR AvgMonth =
+    AVERAGEX ( ALLSELECTED ( DimDate[YearMonth] ), CALCULATE ( [Total Requests] ) )
+RETURN DIVIDE ( ThisMonth, AvgMonth )
+// [Format: 0.00]
+
+// ------------------------------------------------------------ 04 Ranking ---
+
+Service Rank (Volume) =
+IF ( ISINSCOPE ( DimServiceType[ServiceName] ),
+     RANKX ( ALLSELECTED ( DimServiceType[ServiceName] ), [Total Requests], , DESC, DENSE ) )
+
+Community Rank (Volume) =
+IF ( ISINSCOPE ( DimCommunity[CommunityName] ),
+     RANKX ( ALLSELECTED ( DimCommunity[CommunityName] ), [Total Requests], , DESC, DENSE ) )
+
+Community Rank (Benchmark, min 1,000) =
+IF (
+    ISINSCOPE ( DimCommunity[CommunityName] ) && [Total Requests] >= 1000,
+    RANKX (
+        FILTER ( ALLSELECTED ( DimCommunity[CommunityName] ), [Total Requests] >= 1000 ),
+        [Within Benchmark %], , ASC, DENSE
+    )
+)
+// 1 = worst service level among communities with enough volume
+
+// ------------------------------------------------------------ 05 UX ---------
+
+Data As Of =
+"Calgary 311 open data · requests to " & FORMAT ( MAX ( DimDate[Date] ) , "d mmm yyyy" )
+// Put a page filter DimDate[IsAfterSnapshot] = 0 so MAX returns the snapshot date.
+
+Page Title Service =
+"Service performance – " & SELECTEDVALUE ( DimServiceType[ServiceCategory], "All categories" )
+
+// ------------------------------------------------------- 06 Card Labels -----
+// Small comparison lines under the KPI cards (Card visual > Reference labels)
+
+Card Sub Requests =
+VAR v = [Requests YoY %]
+RETURN IF ( v >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( v ), "0.0%" ) & " vs PY"
+
+Card Sub Median =
+"P90 " & FORMAT ( [P90 Resolution Days], "0" ) & " days"
+
+Card Sub Benchmark =
+VAR d = [Benchmark Change (pts)]
+RETURN IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ) * 100, "0.0" ) & " pts vs PY"
+
+Card Sub Same Day =
+"PY " & FORMAT ( CALCULATE ( [Same-Day Closure %], SAMEPERIODLASTYEAR ( DimDate[Date] ) ), "0.0%" )
+
+Card Sub Backlog =
+FORMAT ( [Backlog Over 90 Days %], "0%" ) & " open > 90 days"
+
+Card Sub Digital =
+VAR d = [Digital Share %] - [Digital Share % PY]
+RETURN IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ) * 100, "0.0" ) & " pts vs PY"
+
+Card Color Benchmark =
+IF ( [Benchmark Change (pts)] >= 0, "#2E7D32", "#B71C1C" )
+
+Card Color Digital =
+IF ( [Digital Share %] >= [Digital Share % PY], "#2E7D32", "#B71C1C" )
+
+// ------------------------------------------------------- 07 Comparison ------
+// Display formatting for the Simulated vs Real summary table (one metric per row,
+// different units per row, so the format is chosen from the metric name).
+
+Simulated Value =
+VAR m = SELECTEDVALUE ( comparison_summary[Metric] )
+VAR v = SUM ( comparison_summary[Simulated] )
+RETURN
+    SWITCH (
+        TRUE (),
+        ISBLANK ( v ), BLANK (),
+        CONTAINSSTRING ( m, "share" ) || CONTAINSSTRING ( m, "growth" ) || CONTAINSSTRING ( m, "closed" ), FORMAT ( v, "0.0%" ),
+        CONTAINSSTRING ( m, "÷" ) || CONTAINSSTRING ( m, "index" ), FORMAT ( v, "0.00" ),
+        FORMAT ( v, "#,0" )
+    )
+
+Real Value =
+VAR m = SELECTEDVALUE ( comparison_summary[Metric] )
+VAR v = SUM ( comparison_summary[Real (Calgary)] )
+RETURN
+    SWITCH (
+        TRUE (),
+        ISBLANK ( v ), BLANK (),
+        CONTAINSSTRING ( m, "share" ) || CONTAINSSTRING ( m, "growth" ) || CONTAINSSTRING ( m, "closed" ), FORMAT ( v, "0.0%" ),
+        CONTAINSSTRING ( m, "÷" ) || CONTAINSSTRING ( m, "index" ), FORMAT ( v, "0.00" ),
+        FORMAT ( v, "#,0" )
+    )

@@ -1,0 +1,7 @@
+Region,closed_requests,avg_resolution_hours,sla_compliance,avg_csat
+Ottawa,12798,45.8,0.8909,4.0
+Mississauga,13190,44.0,0.9137,4.05
+Toronto,21444,44.1,0.9157,4.07
+London,8306,43.0,0.9228,4.03
+Hamilton,9802,42.5,0.9282,4.07
+Kitchener-Waterloo,8855,42.4,0.9302,4.12

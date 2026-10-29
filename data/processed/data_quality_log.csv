@@ -1,0 +1,34 @@
+Source,Check,RowsAffected,Action,Severity
+crm_customers.csv,Customer name casing / whitespace standardised,61,Fixed,Warning
+crm_customers.csv,Province values standardised to 'ON',220,Fixed,Warning
+crm_customers.csv,Exact duplicate customer rows,12,Removed (kept first),Warning
+crm_customers.csv,Conflicting rows for the same CustomerID,0,Quarantined,Error
+hr_technicians.csv,Conflicting rows for the same TechnicianID,0,Quarantined,Error
+fsm_service_requests.csv,Exact duplicate rows,640,Removed (kept first),Error
+fsm_service_requests.csv,Conflicting rows for the same ServiceRequestID,0,Quarantined,Error
+fsm_service_requests.csv,Inconsistent region spelling standardised,3821,Fixed,Warning
+fsm_service_requests.csv,Unrecognised region,0,Quarantined,Error
+fsm_service_requests.csv,Invalid or missing CreatedAt,130,Quarantined,Error
+fsm_service_requests.csv,Closed/cancelled without ClosedAt,0,Quarantined,Error
+fsm_service_requests.csv,ClosedAt before CreatedAt,180,Quarantined,Error
+fsm_service_requests.csv,CreatedAt after extract snapshot,0,Quarantined,Error
+fsm_service_requests.csv,Missing CustomerID,210,Quarantined,Error
+fsm_service_requests.csv,CustomerID not found in CRM,0,Quarantined,Error
+fsm_service_requests.csv,Invalid Status,0,Quarantined,Error
+fsm_service_requests.csv,Invalid Priority,0,Quarantined,Error
+fsm_service_requests.csv,Invalid ServiceType,0,Quarantined,Error
+fsm_service_requests.csv,Closed/in-progress request missing TechnicianID,317,"Kept, mapped to 'Unknown' technician (revenue preserved)",Warning
+fsm_service_requests.csv,TechnicianID not found in HR,0,Quarantined,Error
+billing_invoices.csv,Exact duplicate invoice rows,110,Removed (kept first),Error
+billing_invoices.csv,Conflicting rows for the same InvoiceID,0,Quarantined,Error
+billing_invoices.csv,Non-numeric amount,0,Quarantined,Error
+billing_invoices.csv,Negative cost or amount,160,Quarantined,Error
+billing_invoices.csv,Orphan invoice: ServiceRequestID not in FSM,45,Quarantined,Error
+billing_invoices.csv,Invoice for a quarantined service request,511,Quarantined,Error
+billing_invoices.csv,More than one invoice for a service request,0,Quarantined,Error
+csat_survey_responses.csv,CSAT score outside 1-5 scale,262,Quarantined,Error
+csat_survey_responses.csv,Survey for unknown or quarantined service request,156,Quarantined,Error
+csat_survey_responses.csv,Multiple responses for one request,158,Kept latest response,Warning
+FSM vs Billing,Closed requests not yet invoiced (closed in last 10 days),408,Expected timing gap - reported as unbilled WIP,Info
+FSM vs Billing,Closed requests not invoiced (older than 10 days),157,Flagged for finance follow-up,Warning
+FSM vs Billing,Invoices for requests that are not Closed,0,Flagged,Warning

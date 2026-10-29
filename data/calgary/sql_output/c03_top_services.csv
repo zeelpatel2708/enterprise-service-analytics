@@ -1,0 +1,16 @@
+rank_no,ServiceName,ServiceCategory,requests,share_of_total,cumulative_share,yoy_jan_sep
+1,WRS - Cart Management,WRS,78299,0.0566,0.0566,-0.0416
+2,AT - Property Tax Account Inquiry,AT,50648,0.0366,0.0932,-0.6428
+3,Parks - Tree Concern - GIS,Parks,42413,0.0306,0.1238,-0.115
+4,Corporate - Graffiti Concerns,Corporate,33379,0.0241,0.1479,0.2488
+5,Bylaw - Snow and Ice on Sidewalk,Bylaw,31965,0.0231,0.171,0.2414
+6,Bylaw - Long Grass - Weeds Infraction,Bylaw,31718,0.0229,0.1939,-0.1565
+7,WRS - Waste - Residential,WRS,29261,0.0211,0.2151,0.1077
+8,WRS - Recycling - Blue Cart,WRS,29013,0.021,0.236,0.1229
+9,Roads - Pothole Maintenance,Roads,26518,0.0192,0.2552,0.5072
+10,WRS - Compost - Green Cart,WRS,25634,0.0185,0.2737,-0.0623
+11,Bylaw - Material on Public Property,Bylaw,25289,0.0183,0.292,0.1182
+12,WRS - New Service - Carts,WRS,23607,0.0171,0.309,-0.0926
+13,Corporate - Encampment Concerns,Corporate,22509,0.0163,0.3253,-0.1858
+14,Roads - Debris on Street/Sidewalk/Boulevard,Roads,19099,0.0138,0.3391,0.0197
+15,Roads - Snow and Ice Control,Roads,19013,0.0137,0.3528,0.6569

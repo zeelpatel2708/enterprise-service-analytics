@@ -1,0 +1,9 @@
+Edition,Check,RowsAffected,PctOfRaw,Origin
+Simulated,Exact duplicate rows,640,0.0083,Injected on purpose
+Simulated,Inconsistent region spelling standardised,3821,0.04958,Injected on purpose
+Simulated,Invalid or missing CreatedAt,130,0.00169,Injected on purpose
+Simulated,ClosedAt before CreatedAt,180,0.00234,Injected on purpose
+Simulated,Missing CustomerID,210,0.00272,Injected on purpose
+Simulated,Closed/in-progress request missing TechnicianID,317,0.00411,Injected on purpose
+Real (Calgary),closed_date present but status open (re-opened),3573,0.00258,Found in the wild
+Real (Calgary),Missing community,94791,0.06849,Found in the wild

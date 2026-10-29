@@ -1,0 +1,112 @@
+TechnicianKey,TechnicianID,TechnicianName,SkillLevel,Specialization,Region,HireDate,TerminationDate,IsActive,TenureYears,TenureBand
+-1,UNKNOWN,Unknown (not recorded),N/A,N/A,N/A,,,,,N/A
+-2,UNASSIGNED,Unassigned,N/A,N/A,N/A,,,,,N/A
+1,TECH-0001,Helen Stevens,Junior,HVAC,Toronto,2014-10-02,2024-11-29,0,10.2,6+ yrs
+2,TECH-0002,Hannah Smith,Expert,Controls & Automation,Toronto,2014-09-15,,1,12.0,6+ yrs
+3,TECH-0003,Jason Carpenter,Intermediate,Controls & Automation,Toronto,2016-03-01,,1,10.6,6+ yrs
+4,TECH-0004,Mark Salazar,Junior,General,Toronto,2015-01-18,,1,11.7,6+ yrs
+5,TECH-0005,Jordan Dunn,Intermediate,HVAC,Toronto,2023-09-15,,1,3.0,1-3 yrs
+6,TECH-0006,Joel Ruiz,Intermediate,Electrical,Toronto,2020-10-11,,1,6.0,3-6 yrs
+7,TECH-0007,Christie Diaz,Intermediate,Mechanical,Toronto,2018-02-15,,1,8.6,6+ yrs
+8,TECH-0008,Victor Clark,Intermediate,Mechanical,Toronto,2015-05-20,,1,11.4,6+ yrs
+9,TECH-0009,Jaclyn Watson,Senior,HVAC,Toronto,2023-09-19,,1,3.0,1-3 yrs
+10,TECH-0010,Melissa Ramirez,Junior,Controls & Automation,Toronto,2014-03-22,,1,12.5,6+ yrs
+11,TECH-0011,Hector Anderson,Junior,HVAC,Toronto,2022-06-27,,1,4.3,3-6 yrs
+12,TECH-0012,Barbara Perez,Junior,HVAC,Toronto,2015-05-27,,1,11.3,6+ yrs
+13,TECH-0013,Cory Nelson,Senior,HVAC,Toronto,2021-06-26,,1,5.3,3-6 yrs
+14,TECH-0014,Joe Reynolds,Senior,General,Toronto,2020-03-16,,1,6.5,6+ yrs
+15,TECH-0015,Oscar Thomas,Senior,Controls & Automation,Toronto,2016-03-08,,1,10.6,6+ yrs
+16,TECH-0016,Susan Hernandez,Senior,Controls & Automation,Toronto,2016-08-28,,1,10.1,6+ yrs
+17,TECH-0017,Linda Thompson,Senior,Controls & Automation,Toronto,2021-04-15,,1,5.5,3-6 yrs
+18,TECH-0018,Victor Cowan,Intermediate,General,Toronto,2015-04-27,,1,11.4,6+ yrs
+19,TECH-0019,Melissa Holmes,Junior,Electrical,Toronto,2017-05-07,,1,9.4,6+ yrs
+20,TECH-0020,Jennifer Floyd,Junior,Mechanical,Toronto,2018-05-02,,1,8.4,6+ yrs
+21,TECH-0021,Kevin Hart,Junior,HVAC,Toronto,2019-12-25,,1,6.8,6+ yrs
+22,TECH-0022,Ashley Ross,Expert,Electrical,Toronto,2014-07-18,,1,12.2,6+ yrs
+23,TECH-0023,Hannah Brown,Junior,Electrical,Toronto,2019-03-07,,1,7.6,6+ yrs
+24,TECH-0024,Lisa Woods,Intermediate,Mechanical,Toronto,2022-11-04,,1,3.9,3-6 yrs
+25,TECH-0025,Crystal Cole,Intermediate,Controls & Automation,Toronto,2014-02-04,,1,12.7,6+ yrs
+26,TECH-0026,Matthew Ward,Intermediate,HVAC,Toronto,2020-06-04,,1,6.3,6+ yrs
+27,TECH-0027,Ann Frederick,Junior,HVAC,Toronto,2025-02-06,,1,1.6,1-3 yrs
+28,TECH-0028,Jonathan Smith,Intermediate,General,Toronto,2025-01-22,,1,1.7,1-3 yrs
+29,TECH-0029,David Dillon,Intermediate,Electrical,Toronto,2025-08-12,,1,1.1,1-3 yrs
+30,TECH-0030,Sylvia Gonzalez,Intermediate,Controls & Automation,Toronto,2026-01-13,,1,0.7,< 1 yr
+31,TECH-0031,Barbara Banks,Junior,Electrical,Toronto,2026-01-12,,1,0.7,< 1 yr
+32,TECH-0032,Greg Deleon,Junior,Electrical,Mississauga,2020-03-22,,1,6.5,6+ yrs
+33,TECH-0033,Michael Nunez,Intermediate,Controls & Automation,Mississauga,2017-04-06,2025-04-30,0,8.1,6+ yrs
+34,TECH-0034,Tony Doyle,Senior,Electrical,Mississauga,2019-12-22,,1,6.8,6+ yrs
+35,TECH-0035,Pamela James,Expert,Mechanical,Mississauga,2023-07-28,,1,3.2,3-6 yrs
+36,TECH-0036,Justin Welch,Senior,Controls & Automation,Mississauga,2021-03-07,,1,5.6,3-6 yrs
+37,TECH-0037,Duane Jackson,Junior,Controls & Automation,Mississauga,2019-03-17,,1,7.5,6+ yrs
+38,TECH-0038,Lindsey Rogers,Expert,HVAC,Mississauga,2014-12-23,,1,11.8,6+ yrs
+39,TECH-0039,Crystal Duncan,Intermediate,HVAC,Mississauga,2014-04-19,,1,12.4,6+ yrs
+40,TECH-0040,Melinda Jones,Junior,Controls & Automation,Mississauga,2015-01-06,,1,11.7,6+ yrs
+41,TECH-0041,Fernando Perez,Intermediate,Electrical,Mississauga,2014-01-11,,1,12.7,6+ yrs
+42,TECH-0042,Logan Carter,Senior,Electrical,Mississauga,2015-01-22,,1,11.7,6+ yrs
+43,TECH-0043,Joseph Newman,Intermediate,HVAC,Mississauga,2018-08-17,,1,8.1,6+ yrs
+44,TECH-0044,Joseph Wallace,Intermediate,HVAC,Mississauga,2019-11-01,,1,6.9,6+ yrs
+45,TECH-0045,Michelle Cox,Junior,HVAC,Mississauga,2018-08-24,,1,8.1,6+ yrs
+46,TECH-0046,Brenda Sheppard,Junior,General,Mississauga,2023-02-19,,1,3.6,3-6 yrs
+47,TECH-0047,Robert White,Junior,Controls & Automation,Mississauga,2015-04-30,,1,11.4,6+ yrs
+48,TECH-0048,Andrew Luna,Junior,Electrical,Mississauga,2025-02-03,,1,1.7,1-3 yrs
+49,TECH-0049,Ebony Shepard,Junior,General,Mississauga,2025-07-11,,1,1.2,1-3 yrs
+50,TECH-0050,Jackie Miller,Junior,Electrical,Mississauga,2026-02-14,,1,0.6,< 1 yr
+51,TECH-0051,Garrett Garcia,Senior,Electrical,Ottawa,2019-12-02,2026-02-13,0,6.2,6+ yrs
+52,TECH-0052,Caleb Johns,Intermediate,General,Ottawa,2015-03-12,,1,11.6,6+ yrs
+53,TECH-0053,Amy Johnson,Intermediate,Mechanical,Ottawa,2018-03-03,,1,8.6,6+ yrs
+54,TECH-0054,Randy Hubbard,Intermediate,General,Ottawa,2014-04-20,,1,12.4,6+ yrs
+55,TECH-0055,Christopher Baker,Expert,HVAC,Ottawa,2016-02-17,2026-02-22,0,10.0,6+ yrs
+56,TECH-0056,Eric Pena,Intermediate,General,Ottawa,2018-09-18,,1,8.0,6+ yrs
+57,TECH-0057,Nicole Parker,Senior,Electrical,Ottawa,2022-11-19,,1,3.9,3-6 yrs
+58,TECH-0058,John Mitchell,Intermediate,General,Ottawa,2019-10-23,,1,6.9,6+ yrs
+59,TECH-0059,Courtney Anderson,Intermediate,Electrical,Ottawa,2020-07-20,,1,6.2,6+ yrs
+60,TECH-0060,Mary Johnson,Junior,Electrical,Ottawa,2016-12-20,,1,9.8,6+ yrs
+61,TECH-0061,Elizabeth Dalton,Junior,Controls & Automation,Ottawa,2015-05-30,,1,11.3,6+ yrs
+62,TECH-0062,Mark Alvarez,Senior,Electrical,Ottawa,2016-08-07,,1,10.1,6+ yrs
+63,TECH-0063,Theresa Fernandez,Junior,Mechanical,Ottawa,2015-02-27,,1,11.6,6+ yrs
+64,TECH-0064,Joseph Wallace,Junior,General,Ottawa,2014-06-12,,1,12.3,6+ yrs
+65,TECH-0065,Tara Wolfe,Junior,General,Ottawa,2015-12-12,,1,10.8,6+ yrs
+66,TECH-0066,Gregory Harper,Junior,Mechanical,Ottawa,2025-01-12,,1,1.7,1-3 yrs
+67,TECH-0067,Crystal Fields,Junior,Electrical,Ottawa,2025-07-13,,1,1.2,1-3 yrs
+68,TECH-0068,Anne Mills,Intermediate,Electrical,Hamilton,2017-03-03,,1,9.6,6+ yrs
+69,TECH-0069,Danielle Collins,Senior,HVAC,Hamilton,2018-09-03,,1,8.1,6+ yrs
+70,TECH-0070,Michael Fernandez,Intermediate,Mechanical,Hamilton,2023-07-20,,1,3.2,3-6 yrs
+71,TECH-0071,Linda Ramos,Intermediate,HVAC,Hamilton,2016-10-05,,1,10.0,6+ yrs
+72,TECH-0072,Michael Green,Junior,Mechanical,Hamilton,2018-03-17,,1,8.5,6+ yrs
+73,TECH-0073,Kevin Smith,Junior,Controls & Automation,Hamilton,2016-10-27,,1,9.9,6+ yrs
+74,TECH-0074,Lisa Charles,Senior,Electrical,Hamilton,2022-05-31,,1,4.3,3-6 yrs
+75,TECH-0075,Maurice Harrison,Junior,HVAC,Hamilton,2019-03-30,,1,7.5,6+ yrs
+76,TECH-0076,Alan Weeks,Senior,Controls & Automation,Hamilton,2020-08-30,,1,6.1,6+ yrs
+77,TECH-0077,Stacey Woods,Junior,HVAC,Hamilton,2020-12-06,,1,5.8,3-6 yrs
+78,TECH-0078,Albert Jordan,Intermediate,Mechanical,Hamilton,2016-07-01,,1,10.2,6+ yrs
+79,TECH-0079,Kelly Hall,Intermediate,Mechanical,Hamilton,2014-07-10,,1,12.2,6+ yrs
+80,TECH-0080,Adrian Brooks,Intermediate,Controls & Automation,Hamilton,2025-01-29,,1,1.7,1-3 yrs
+81,TECH-0081,Robert Castro,Junior,Electrical,Hamilton,2025-07-24,,1,1.2,1-3 yrs
+82,TECH-0082,Ralph Martin,Junior,Electrical,Hamilton,2026-02-10,,1,0.6,< 1 yr
+83,TECH-0083,Jillian Price,Senior,Electrical,Kitchener-Waterloo,2022-07-09,,1,4.2,3-6 yrs
+84,TECH-0084,Nicholas Baker,Junior,Electrical,Kitchener-Waterloo,2015-04-10,,1,11.5,6+ yrs
+85,TECH-0085,Robert Allen,Expert,Mechanical,Kitchener-Waterloo,2015-01-06,,1,11.7,6+ yrs
+86,TECH-0086,Kathy Kent,Senior,HVAC,Kitchener-Waterloo,2022-11-28,,1,3.8,3-6 yrs
+87,TECH-0087,Lindsey Cohen,Intermediate,General,Kitchener-Waterloo,2019-02-18,,1,7.6,6+ yrs
+88,TECH-0088,Justin Paul,Intermediate,Controls & Automation,Kitchener-Waterloo,2016-07-02,,1,10.2,6+ yrs
+89,TECH-0089,Lisa Gutierrez,Intermediate,Electrical,Kitchener-Waterloo,2016-12-12,,1,9.8,6+ yrs
+90,TECH-0090,Melissa White,Senior,HVAC,Kitchener-Waterloo,2018-07-06,,1,8.2,6+ yrs
+91,TECH-0091,Keith Walsh,Intermediate,General,Kitchener-Waterloo,2023-01-22,,1,3.7,3-6 yrs
+92,TECH-0092,Christine Nelson,Junior,Mechanical,Kitchener-Waterloo,2020-06-12,,1,6.3,6+ yrs
+93,TECH-0093,Cindy Lopez,Senior,HVAC,Kitchener-Waterloo,2014-04-03,,1,12.5,6+ yrs
+94,TECH-0094,Andrew Williams,Intermediate,HVAC,Kitchener-Waterloo,2025-01-12,,1,1.7,1-3 yrs
+95,TECH-0095,Amanda Lopez,Intermediate,Electrical,Kitchener-Waterloo,2025-07-26,,1,1.2,1-3 yrs
+96,TECH-0096,Curtis Adams,Junior,Electrical,Kitchener-Waterloo,2026-01-24,,1,0.7,< 1 yr
+97,TECH-0097,Jennifer Acosta,Intermediate,Controls & Automation,London,2017-07-08,2025-09-12,0,8.2,6+ yrs
+98,TECH-0098,Jesse Hernandez,Senior,Electrical,London,2020-07-20,,1,6.2,6+ yrs
+99,TECH-0099,Tristan Peterson,Junior,Electrical,London,2016-12-05,,1,9.8,6+ yrs
+100,TECH-0100,Larry Lloyd,Intermediate,Mechanical,London,2014-06-14,,1,12.3,6+ yrs
+101,TECH-0101,Whitney Ford,Senior,Controls & Automation,London,2019-09-14,,1,7.0,6+ yrs
+102,TECH-0102,Lacey Rivera,Junior,Mechanical,London,2014-03-29,,1,12.5,6+ yrs
+103,TECH-0103,Megan Lynn,Junior,Electrical,London,2023-08-12,,1,3.1,3-6 yrs
+104,TECH-0104,Brian Rowe,Junior,Controls & Automation,London,2019-12-07,,1,6.8,6+ yrs
+105,TECH-0105,Charles Harrison,Intermediate,Controls & Automation,London,2015-03-23,,1,11.5,6+ yrs
+106,TECH-0106,James Skinner,Junior,Controls & Automation,London,2014-12-30,,1,11.8,6+ yrs
+107,TECH-0107,Lisa Clayton,Intermediate,Electrical,London,2025-01-22,,1,1.7,1-3 yrs
+108,TECH-0108,David Tate,Junior,Mechanical,London,2025-07-11,,1,1.2,1-3 yrs
+109,TECH-0109,John Wise,Intermediate,Controls & Automation,London,2026-01-12,,1,0.7,< 1 yr

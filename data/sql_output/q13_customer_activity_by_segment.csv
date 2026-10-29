@@ -1,0 +1,9 @@
+CustomerSegment,ActivityStatus,customers,share_of_segment
+Enterprise,Active,158,1.0
+Government,Active,110,1.0
+Mid-Market,Active,506,0.9941
+Mid-Market,Cooling (90-180d),3,0.0059
+Small Business,Active,521,0.8363
+Small Business,At Risk (180d+),19,0.0305
+Small Business,Cooling (90-180d),81,0.13
+Small Business,No Activity,2,0.0032

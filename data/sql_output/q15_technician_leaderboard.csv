@@ -1,0 +1,19 @@
+Region,TechnicianName,SkillLevel,ClosedJobs,first_time_fix_rate,sla_compliance,avg_csat,FTFRankInRegion
+Hamilton,Danielle Collins,Senior,719,0.92,0.917,4.15,1
+Hamilton,Lisa Charles,Senior,728,0.918,0.935,4.14,2
+Hamilton,Alan Weeks,Senior,696,0.906,0.941,4.07,3
+Kitchener-Waterloo,Robert Allen,Expert,685,0.944,0.928,4.12,1
+Kitchener-Waterloo,Jillian Price,Senior,686,0.935,0.94,4.16,2
+Kitchener-Waterloo,Kathy Kent,Senior,699,0.932,0.934,4.12,3
+London,Whitney Ford,Senior,785,0.927,0.918,4.07,1
+London,Jesse Hernandez,Senior,755,0.917,0.926,4.04,2
+London,Lisa Clayton,Intermediate,410,0.913,0.944,4.13,3
+Mississauga,Pamela James,Expert,762,0.949,0.916,4.11,1
+Mississauga,Jackie Miller,Junior,171,0.931,0.889,4.02,2
+Mississauga,Justin Welch,Senior,728,0.929,0.912,4.13,3
+Ottawa,Nicole Parker,Senior,805,0.938,0.889,4.04,1
+Ottawa,Christopher Baker,Expert,626,0.935,0.896,4.0,2
+Ottawa,Garrett Garcia,Senior,599,0.927,0.925,4.21,3
+Toronto,Linda Thompson,Senior,723,0.942,0.913,4.16,1
+Toronto,Cory Nelson,Senior,800,0.938,0.912,4.05,2
+Toronto,Susan Hernandez,Senior,785,0.936,0.929,4.16,3

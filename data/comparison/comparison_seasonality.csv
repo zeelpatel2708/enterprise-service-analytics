@@ -1,0 +1,25 @@
+Edition,MonthNumber,SeasonalityIndex
+Simulated,1,0.923
+Simulated,2,0.983
+Simulated,3,0.977
+Simulated,4,1.029
+Simulated,5,1.026
+Simulated,6,0.988
+Simulated,7,1.026
+Simulated,8,1.046
+Simulated,9,1.022
+Simulated,10,1.067
+Simulated,11,0.986
+Simulated,12,0.927
+Real (Calgary),1,0.951
+Real (Calgary),2,0.782
+Real (Calgary),3,0.874
+Real (Calgary),4,1.027
+Real (Calgary),5,1.144
+Real (Calgary),6,1.287
+Real (Calgary),7,1.252
+Real (Calgary),8,1.124
+Real (Calgary),9,1.039
+Real (Calgary),10,0.904
+Real (Calgary),11,0.829
+Real (Calgary),12,0.787

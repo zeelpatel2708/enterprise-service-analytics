@@ -1,0 +1,4 @@
+Year,requests,closed_requests,same_day_closure_rate,avg_resolution_days,within_benchmark_rate,duplicate_requests
+2024,512640,500724,0.1947,18.0,0.8296,5802
+2025,485719,474634,0.1929,14.5,0.8258,4075
+2026,385735,357472,0.2073,7.6,0.8734,3799
