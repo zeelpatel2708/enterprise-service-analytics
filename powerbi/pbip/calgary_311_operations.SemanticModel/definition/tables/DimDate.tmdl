@@ -1,0 +1,219 @@
+table DimDate
+	lineageTag: 2a64b057-4832-5d58-a3ee-e59bbdf52173
+	dataCategory: Time
+
+	column DateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b7677b34-b06c-53bf-a112-594b61357457
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: yyyy-mm-dd
+		lineageTag: e104a780-52dc-562a-be4b-309211939377
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 618f8ec2-3704-5747-bd22-62f03f5e48f0
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column QuarterNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: 813154fd-5e74-585c-a914-77485a89cdd7
+		summarizeBy: none
+		sourceColumn: QuarterNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		dataType: string
+		lineageTag: 73cb497c-94a2-55f4-a52f-da5f6170dccf
+		summarizeBy: none
+		sourceColumn: Quarter
+		sortByColumn: QuarterNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearQuarter
+		dataType: string
+		lineageTag: 7e6923dc-0c7b-57a5-8a12-f3439b2f80e8
+		summarizeBy: none
+		sourceColumn: YearQuarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: 036e239c-86b4-56e2-8c62-1bfc7ec4f1a5
+		summarizeBy: none
+		sourceColumn: MonthNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: string
+		lineageTag: a2f18aa0-e6e1-5022-811d-00bb7f679f2b
+		summarizeBy: none
+		sourceColumn: Month
+		sortByColumn: MonthNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthShort
+		dataType: string
+		lineageTag: 56c1bc8e-49b5-5e0f-a1f7-bcd05b3d0181
+		summarizeBy: none
+		sourceColumn: MonthShort
+		sortByColumn: MonthNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearMonth
+		dataType: string
+		lineageTag: 4ec6bdc1-cfca-5bd8-8db2-426f7c31795a
+		summarizeBy: none
+		sourceColumn: YearMonth
+		sortByColumn: YearMonthKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearMonthKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 77e83083-7b85-5d6b-8632-a345032ad253
+		summarizeBy: none
+		sourceColumn: YearMonthKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthStartDate
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: c53d9c1d-11a5-559a-aee9-94fe17b6a693
+		summarizeBy: none
+		sourceColumn: MonthStartDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ISOWeek
+		dataType: int64
+		formatString: 0
+		lineageTag: 67e57ba3-2dcd-55b2-ae38-05e508c1aa3e
+		summarizeBy: none
+		sourceColumn: ISOWeek
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day
+		dataType: int64
+		formatString: 0
+		lineageTag: d4e7ef4f-61ba-552f-8ca1-c714b0c35b13
+		summarizeBy: none
+		sourceColumn: Day
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfWeekNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: 83c08d4a-2fde-5816-9c02-685d0045bb17
+		summarizeBy: none
+		sourceColumn: DayOfWeekNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfWeek
+		dataType: string
+		lineageTag: 81e93f0f-9ce2-5bce-9991-ea6cd796a27c
+		summarizeBy: none
+		sourceColumn: DayOfWeek
+		sortByColumn: DayOfWeekNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsWeekend
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0f69e869-637f-5b03-aefa-592988f05ad7
+		summarizeBy: sum
+		sourceColumn: IsWeekend
+
+		annotation SummarizationSetBy = Automatic
+
+	column Season
+		dataType: string
+		lineageTag: 559ef934-2015-54fd-813a-a5c073b3a7f4
+		summarizeBy: none
+		sourceColumn: Season
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsAfterSnapshot
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: e210ada0-5731-5c18-ac54-2afba8173731
+		summarizeBy: sum
+		sourceColumn: IsAfterSnapshot
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimDate = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\calgary\model\DimDate.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"DateKey", Int64.Type},
+				        {"Date", type date},
+				        {"Year", Int64.Type},
+				        {"QuarterNumber", Int64.Type},
+				        {"Quarter", type text},
+				        {"YearQuarter", type text},
+				        {"MonthNumber", Int64.Type},
+				        {"Month", type text},
+				        {"MonthShort", type text},
+				        {"YearMonth", type text},
+				        {"YearMonthKey", Int64.Type},
+				        {"MonthStartDate", type date},
+				        {"ISOWeek", Int64.Type},
+				        {"Day", Int64.Type},
+				        {"DayOfWeekNumber", Int64.Type},
+				        {"DayOfWeek", type text},
+				        {"IsWeekend", Int64.Type},
+				        {"Season", type text},
+				        {"IsAfterSnapshot", Int64.Type}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

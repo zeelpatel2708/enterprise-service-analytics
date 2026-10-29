@@ -1,0 +1,225 @@
+table FactServiceRequests
+	lineageTag: 1b10cdfa-cf88-5cf4-9b0e-4e54b7e6b45a
+
+	column ServiceRequestID
+		dataType: string
+		lineageTag: 94569fb8-623a-58e1-a12a-729bee908d00
+		summarizeBy: none
+		sourceColumn: ServiceRequestID
+
+		annotation SummarizationSetBy = Automatic
+
+	column ServiceTypeKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 47497320-43c5-51eb-a990-1d370fe2ffd2
+		summarizeBy: none
+		sourceColumn: ServiceTypeKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CommunityKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 11604dbb-f39d-550f-9f9b-cfe68bfa2b99
+		summarizeBy: none
+		sourceColumn: CommunityKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ChannelKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4b9e4663-d520-5caf-b32e-97ad666ae2f2
+		summarizeBy: none
+		sourceColumn: ChannelKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column RequestedDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 310a3c99-416e-5778-9fc5-ecdf9e296598
+		summarizeBy: none
+		sourceColumn: RequestedDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ClosedDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 39d6ce53-75a3-5c9d-8ab2-7a510517f8e1
+		summarizeBy: none
+		sourceColumn: ClosedDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column StatusGroup
+		dataType: string
+		lineageTag: 6d1adc06-c41a-5979-9fbb-02ae8a3ba02e
+		summarizeBy: none
+		sourceColumn: StatusGroup
+
+		annotation SummarizationSetBy = Automatic
+
+	column StatusRaw
+		dataType: string
+		isHidden
+		lineageTag: ed4dc673-100e-5d70-ba75-7c1b622abe16
+		summarizeBy: none
+		sourceColumn: StatusRaw
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsClosed
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: aaa2b3d7-c718-5653-ae3e-68a0932bc972
+		summarizeBy: sum
+		sourceColumn: IsClosed
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsOpen
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 22ef0194-17a6-5f93-b7ee-13b4ab8f57aa
+		summarizeBy: sum
+		sourceColumn: IsOpen
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsDuplicateRequest
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: e54a47b6-7ae8-5327-b489-af5fa323af95
+		summarizeBy: sum
+		sourceColumn: IsDuplicateRequest
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResolutionDays
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 46021189-599b-5c65-8386-551ec6cbbf98
+		summarizeBy: sum
+		sourceColumn: ResolutionDays
+
+		annotation SummarizationSetBy = Automatic
+
+	column SameDayClosure
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7a741f67-378d-5fdb-9809-66b97b57d878
+		summarizeBy: sum
+		sourceColumn: SameDayClosure
+
+		annotation SummarizationSetBy = Automatic
+
+	column BenchmarkDays
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 9ac5bfd3-d86f-5ef0-b134-388928c389eb
+		summarizeBy: sum
+		sourceColumn: BenchmarkDays
+
+		annotation SummarizationSetBy = Automatic
+
+	column WithinBenchmark
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: a6d1e1da-83f6-535a-8155-e91ce500fe8a
+		summarizeBy: sum
+		sourceColumn: WithinBenchmark
+
+		annotation SummarizationSetBy = Automatic
+
+	column OpenAgeDays
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: ad67a36e-8f72-5c64-8995-2bdfcbb211f9
+		summarizeBy: sum
+		sourceColumn: OpenAgeDays
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsStaleOpen
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 97ec2320-1dee-56d1-a074-c1e233542c30
+		summarizeBy: sum
+		sourceColumn: IsStaleOpen
+
+		annotation SummarizationSetBy = Automatic
+
+	column ClosedDateImputed
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 10ee661a-e678-55e2-b257-468355edb7b1
+		summarizeBy: sum
+		sourceColumn: ClosedDateImputed
+
+		annotation SummarizationSetBy = Automatic
+
+	column ReopenedFlag
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 22a65699-85e4-5c75-a1fd-c1682e513b71
+		summarizeBy: sum
+		sourceColumn: ReopenedFlag
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactServiceRequests = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\calgary\model\FactServiceRequests.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"ServiceRequestID", type text},
+				        {"ServiceTypeKey", Int64.Type},
+				        {"CommunityKey", Int64.Type},
+				        {"ChannelKey", Int64.Type},
+				        {"RequestedDateKey", Int64.Type},
+				        {"ClosedDateKey", Int64.Type},
+				        {"StatusGroup", type text},
+				        {"StatusRaw", type text},
+				        {"IsClosed", Int64.Type},
+				        {"IsOpen", Int64.Type},
+				        {"IsDuplicateRequest", Int64.Type},
+				        {"ResolutionDays", Int64.Type},
+				        {"SameDayClosure", Int64.Type},
+				        {"BenchmarkDays", Int64.Type},
+				        {"WithinBenchmark", Int64.Type},
+				        {"OpenAgeDays", type number},
+				        {"IsStaleOpen", Int64.Type},
+				        {"ClosedDateImputed", Int64.Type},
+				        {"ReopenedFlag", Int64.Type}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

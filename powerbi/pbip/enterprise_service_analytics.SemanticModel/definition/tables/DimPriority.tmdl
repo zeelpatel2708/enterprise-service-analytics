@@ -1,0 +1,72 @@
+table DimPriority
+	lineageTag: 787a6536-b33e-55bd-baf4-28fa9b8e5692
+
+	column PriorityKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 57d47af0-7cbe-58a3-8b78-4ca026e28a14
+		summarizeBy: none
+		sourceColumn: PriorityKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Priority
+		dataType: string
+		lineageTag: 742495d6-2327-533d-aeb8-34e31c3784ab
+		summarizeBy: none
+		sourceColumn: Priority
+		sortByColumn: SortOrder
+
+		annotation SummarizationSetBy = Automatic
+
+	column SLAHours
+		dataType: int64
+		formatString: 0
+		lineageTag: 5c59d4be-aaa3-5e9a-a3fc-27882aa182b5
+		summarizeBy: none
+		sourceColumn: SLAHours
+
+		annotation SummarizationSetBy = Automatic
+
+	column PriceMultiplier
+		dataType: double
+		formatString: #,0.00
+		lineageTag: ecbe7d8b-db4b-5198-8588-865a49182c10
+		summarizeBy: none
+		sourceColumn: PriceMultiplier
+
+		annotation SummarizationSetBy = Automatic
+
+	column SortOrder
+		dataType: int64
+		formatString: 0
+		lineageTag: d4de0289-7ef8-581c-ba92-3c350bae80a8
+		summarizeBy: none
+		sourceColumn: SortOrder
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimPriority = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\model\DimPriority.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"PriorityKey", Int64.Type},
+				        {"Priority", type text},
+				        {"SLAHours", Int64.Type},
+				        {"PriceMultiplier", type number},
+				        {"SortOrder", Int64.Type}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

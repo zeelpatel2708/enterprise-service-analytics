@@ -1,0 +1,50 @@
+table comparison_summary
+	lineageTag: e4192c28-7897-5864-83d5-dcc24095cbdd
+
+	column Metric
+		dataType: string
+		lineageTag: c36e165b-ae97-5063-ae65-2c612ecef29d
+		summarizeBy: none
+		sourceColumn: Metric
+
+		annotation SummarizationSetBy = Automatic
+
+	column Simulated
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 9d1704d6-416f-5938-8299-07c25d9d6128
+		summarizeBy: sum
+		sourceColumn: Simulated
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Real (Calgary)'
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 5c7e480d-9394-55e5-a5f0-4ee197c342c8
+		summarizeBy: sum
+		sourceColumn: Real (Calgary)
+
+		annotation SummarizationSetBy = Automatic
+
+	partition comparison_summary = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\comparison\comparison_summary.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"Metric", type text},
+				        {"Simulated", type number},
+				        {"Real (Calgary)", type number}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

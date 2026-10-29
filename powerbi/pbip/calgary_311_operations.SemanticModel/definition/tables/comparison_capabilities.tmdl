@@ -1,0 +1,48 @@
+table comparison_capabilities
+	lineageTag: c87b251b-7ce9-572c-b28b-1c86ec68eae1
+
+	column Question
+		dataType: string
+		lineageTag: 882b87c8-9959-56fb-a039-2ac259ecbcb2
+		summarizeBy: none
+		sourceColumn: Question
+
+		annotation SummarizationSetBy = Automatic
+
+	column Simulated
+		dataType: string
+		lineageTag: cd36e839-6514-53cf-9695-1c931a05c3ba
+		summarizeBy: none
+		sourceColumn: Simulated
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Real (Calgary)'
+		dataType: string
+		lineageTag: 02fbdb08-4762-5e6a-be9a-878e30f8eece
+		summarizeBy: none
+		sourceColumn: Real (Calgary)
+
+		annotation SummarizationSetBy = Automatic
+
+	partition comparison_capabilities = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\comparison\comparison_capabilities.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"Question", type text},
+				        {"Simulated", type text},
+				        {"Real (Calgary)", type text}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

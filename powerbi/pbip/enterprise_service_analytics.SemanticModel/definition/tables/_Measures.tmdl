@@ -1,0 +1,668 @@
+table _Measures
+	lineageTag: 6ac858df-c457-58fc-a9d4-fd86119e6e61
+
+	measure 'Total Requests' = COUNTROWS ( FactServiceRequests )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 210b6cca-cd5f-5563-8ae6-fb6ba7d448e7
+
+	measure 'Cancelled Requests' = CALCULATE ( [Total Requests], FactServiceRequests[IsCancelled] = 1 )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 17381bcc-ce2b-5fd5-86a3-fb3232ddfd46
+
+	measure 'Billable Workload' = [Total Requests] - [Cancelled Requests]
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: a7bba4b9-6950-5e21-a5a6-033458600383
+
+	measure 'Completed Requests' =
+			CALCULATE (
+			    [Total Requests],
+			    FactServiceRequests[IsClosed] = 1,
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 37c21cb4-8384-5d74-8e7a-7ee510bfd2d6
+
+	measure 'Open Requests (Current)' = CALCULATE ( [Total Requests], FactServiceRequests[IsOpen] = 1, REMOVEFILTERS ( DimDate ) )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 2314a292-ef0c-5953-ad31-a908b1a99308
+
+	/// Requests created on/before the last visible day and not closed by then.
+	/// Works at any grain (day/month/quarter) and with any slicer.
+	measure 'Backlog (Open at Period End)' =
+			VAR EndKey = MAX ( DimDate[DateKey] )
+			RETURN
+			    CALCULATE (
+			        [Total Requests],
+			        REMOVEFILTERS ( DimDate ),
+			        FactServiceRequests[CreatedDateKey] <= EndKey,
+			        FactServiceRequests[IsCancelled] = 0,
+			        FILTER (
+			            ALL ( FactServiceRequests[ClosedDateKey] ),
+			            ISBLANK ( FactServiceRequests[ClosedDateKey] )
+			                || FactServiceRequests[ClosedDateKey] > EndKey
+			        )
+			    )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: a9ce1b45-c4fb-50eb-8b87-ba85f4dab425
+
+	/// Semi-additive: take the LAST snapshot in the period, never sum across months.
+	measure 'Backlog (Month-End Snapshot)' =
+			VAR LastSnapshot = MAX ( FactBacklogSnapshot[SnapshotDateKey] )
+			RETURN
+			    CALCULATE (
+			        SUM ( FactBacklogSnapshot[OpenRequests] ),
+			        FactBacklogSnapshot[SnapshotDateKey] = LastSnapshot
+			    )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: c491bd39-ecb5-59f9-8f3b-e6b06d0e527f
+
+	measure 'Backlog PM' = CALCULATE ( [Backlog (Month-End Snapshot)], DATEADD ( DimDate[Date], -1, MONTH ) )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 2d5e3e87-c91e-5902-bbc6-64c5066e843c
+
+	measure 'Backlog Growth %' = DIVIDE ( [Backlog (Month-End Snapshot)] - [Backlog PM], [Backlog PM] )
+		formatString: 0.0%
+		displayFolder: 01 Volume
+		lineageTag: 6e722758-2d86-573a-9797-f3d79f31864c
+
+	measure 'Open Breached SLA' =
+			VAR LastSnapshot = MAX ( FactBacklogSnapshot[SnapshotDateKey] )
+			RETURN
+			    CALCULATE (
+			        SUM ( FactBacklogSnapshot[OpenBreachedSLA] ),
+			        FactBacklogSnapshot[SnapshotDateKey] = LastSnapshot
+			    )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 48637f19-ea3b-591c-a1d8-c301ac43683d
+
+	measure 'Requests PY' = CALCULATE ( [Total Requests], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 4759e770-5327-55eb-91ac-6a4dbc84a5f9
+
+	measure 'Requests YoY %' = DIVIDE ( [Total Requests] - [Requests PY], [Requests PY] )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 01 Volume
+		lineageTag: 28441989-b1ec-5bb3-a571-3fa486a500c3
+
+	measure 'SLA Met Requests' =
+			CALCULATE (
+			    SUM ( FactServiceRequests[SLAMet] ),
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: #,0
+		displayFolder: 02 Service Level
+		lineageTag: 20f92041-c915-5398-a326-43e3ba956f9f
+
+	measure 'SLA Measured Requests' =
+			CALCULATE (
+			    COUNT ( FactServiceRequests[SLAMet] ),
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: #,0
+		displayFolder: 02 Service Level
+		lineageTag: 53b0608c-9525-5f24-8baa-31c80728c73b
+
+	measure 'SLA Compliance %' = DIVIDE ( [SLA Met Requests], [SLA Measured Requests] )
+		formatString: 0.0%
+		displayFolder: 02 Service Level
+		lineageTag: 1e09a843-c336-5b05-9769-04857adf654b
+
+	measure 'SLA Breaches' = [SLA Measured Requests] - [SLA Met Requests]
+		formatString: #,0
+		displayFolder: 02 Service Level
+		lineageTag: 4be40d1c-2cab-5391-b984-9e5ca6fd711d
+
+	measure 'SLA Compliance % PY' = CALCULATE ( [SLA Compliance %], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+		formatString: 0.0%
+		displayFolder: 02 Service Level
+		lineageTag: 69607e10-ef71-58c5-8f58-33263ebb9efa
+
+	/// Ratio of sums over the window - NOT an average of three monthly percentages.
+	measure 'SLA Compliance % Rolling 3M' =
+			CALCULATE (
+			    [SLA Compliance %],
+			    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -3, MONTH )
+			)
+		formatString: 0.0%
+		displayFolder: 02 Service Level
+		lineageTag: 6b3cc658-c783-5510-9da1-ef7b9b35d291
+
+	measure 'Avg Resolution Hours' =
+			CALCULATE (
+			    AVERAGE ( FactServiceRequests[ResolutionHours] ),
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: #,0.0
+		displayFolder: 02 Service Level
+		lineageTag: 8a6cbcd9-c66b-5077-80f4-717b5490698b
+
+	/// Median is robust to the few "waiting on parts" tickets that take weeks.
+	measure 'Median Resolution Hours' =
+			CALCULATE (
+			    MEDIAN ( FactServiceRequests[ResolutionHours] ),
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: #,0.0
+		displayFolder: 02 Service Level
+		lineageTag: 3f554fe2-7ed4-5a7d-8a22-a402eca8c867
+
+	measure 'P90 Resolution Hours' =
+			CALCULATE (
+			    PERCENTILE.INC ( FactServiceRequests[ResolutionHours], 0.9 ),
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: #,0.0
+		displayFolder: 02 Service Level
+		lineageTag: 36fea410-8080-5983-b3aa-5dbaf82eb973
+
+	/// FirstTimeFixFlag is blank until 30 days after closure, so DIVIDE/COUNT only
+	/// uses jobs whose outcome is actually known.
+	measure 'First-Time Fix Rate' =
+			CALCULATE (
+			    DIVIDE ( SUM ( FactServiceRequests[FirstTimeFixFlag] ), COUNT ( FactServiceRequests[FirstTimeFixFlag] ) ),
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: 0.0%
+		displayFolder: 02 Service Level
+		lineageTag: 7baa25fd-f017-50d8-89b0-bc547c589b62
+
+	measure 'Repeat Visits' = SUM ( FactServiceRequests[RepeatVisitFlag] )
+		formatString: #,0
+		displayFolder: 02 Service Level
+		lineageTag: 4d439f59-5a30-5d6f-9fb4-aa37f632c9a2
+
+	measure 'Repeat Visit Rate' = DIVIDE ( [Repeat Visits], [Billable Workload] )
+		formatString: 0.0%
+		displayFolder: 02 Service Level
+		lineageTag: 6dbbeb2a-3fee-5164-9747-f126d5c732f5
+
+	measure 'Avg CSAT' =
+			CALCULATE (
+			    AVERAGE ( FactServiceRequests[CSATScore] ),
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: 0.00
+		displayFolder: 03 Customer
+		lineageTag: 6f31d443-68a7-5c58-a1aa-bac20284fd75
+
+	measure 'Avg CSAT PY' = CALCULATE ( [Avg CSAT], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+		formatString: 0.00
+		displayFolder: 03 Customer
+		lineageTag: 9e68c9b8-4139-55bf-a0bb-616b4cc3b5aa
+
+	measure 'CSAT Responses' =
+			CALCULATE (
+			    COUNT ( FactServiceRequests[CSATScore] ),
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: #,0
+		displayFolder: 03 Customer
+		lineageTag: 219677c4-daf5-502b-b459-4f13d8d14e27
+
+	measure 'CSAT Response Rate' = DIVIDE ( [CSAT Responses], [Completed Requests] )
+		formatString: 0.0%
+		displayFolder: 03 Customer
+		lineageTag: d4a6034c-2d6c-51c9-acc5-d021110bb3f3
+
+	measure 'Low-CSAT Requests' = CALCULATE ( [CSAT Responses], FactServiceRequests[CSATScore] <= 2 )
+		formatString: #,0
+		displayFolder: 03 Customer
+		lineageTag: 84de9f3f-3d52-5fb1-8b50-c3928d875833
+
+	measure 'Low-CSAT %' = DIVIDE ( [Low-CSAT Requests], [CSAT Responses] )
+		formatString: 0.0%
+		displayFolder: 03 Customer
+		lineageTag: ae1be14a-9db2-54c8-849e-edc37b879ebf
+
+	measure 'Active Customers' = CALCULATE ( DISTINCTCOUNT ( FactServiceRequests[CustomerKey] ) )
+		formatString: #,0
+		displayFolder: 03 Customer
+		lineageTag: 9feecde2-e6d0-5f76-8286-2cc9bd5b1112
+
+	/// Retention proxy: no request in the 180 days before the snapshot
+	measure 'Customers At Risk' = CALCULATE ( COUNTROWS ( DimCustomer ), DimCustomer[ActivityStatus] = "At Risk (180d+)" )
+		formatString: #,0
+		displayFolder: 03 Customer
+		lineageTag: 200873bc-a8f6-571b-a47b-42ed53b45ddd
+
+	measure 'Customer Retention Proxy %' =
+			DIVIDE (
+			    CALCULATE ( COUNTROWS ( DimCustomer ), DimCustomer[ActivityStatus] = "Active" ),
+			    COUNTROWS ( DimCustomer )
+			)
+		formatString: 0.0%
+		displayFolder: 03 Customer
+		lineageTag: ba3eaa67-eab0-5850-8d51-a8684aa027cb
+
+	measure 'Service Revenue' = SUM ( FactServiceRequests[ServiceRevenue] )
+		formatString: $#,0
+		displayFolder: 04 Financial
+		lineageTag: 46a3bb3e-0946-54b8-b372-7e16f6bdbaca
+
+	measure 'Labour Cost' = SUM ( FactServiceRequests[LabourCost] )
+		formatString: $#,0
+		displayFolder: 04 Financial
+		lineageTag: b3da2128-17f0-5566-89d3-04d40452b3f0
+
+	measure 'Parts Cost' = SUM ( FactServiceRequests[PartsCost] )
+		formatString: $#,0
+		displayFolder: 04 Financial
+		lineageTag: 3d4ea3cf-77aa-52e0-89a0-b8fb3dc470f7
+
+	measure 'Direct Cost' = [Labour Cost] + [Parts Cost]
+		formatString: $#,0
+		displayFolder: 04 Financial
+		lineageTag: 22736448-792c-5f83-9910-db74a2de9bd9
+
+	measure 'Gross Margin' = [Service Revenue] - [Direct Cost]
+		formatString: $#,0
+		displayFolder: 04 Financial
+		lineageTag: 4d381ab0-71b4-5815-bfb0-fa3510cca61d
+
+	measure 'Gross Margin %' = DIVIDE ( [Gross Margin], [Service Revenue] )
+		formatString: 0.0%
+		displayFolder: 04 Financial
+		lineageTag: 5fdc7bd8-6bb2-5a32-bd42-d44021c47b67
+
+	measure 'Invoiced Requests' = CALCULATE ( [Total Requests], FactServiceRequests[BillingType] = "Billable" )
+		formatString: #,0
+		displayFolder: 04 Financial
+		lineageTag: 57e62ef8-1536-5085-bbec-72887baebd81
+
+	measure 'Revenue per Request' = DIVIDE ( [Service Revenue], [Invoiced Requests] )
+		formatString: $#,0
+		displayFolder: 04 Financial
+		lineageTag: 5a7f7e44-4dea-5997-9e36-65ce05bc84b8
+
+	measure 'Warranty Cost' = CALCULATE ( [Direct Cost], FactServiceRequests[BillingType] = "Warranty" )
+		formatString: $#,0
+		displayFolder: 04 Financial
+		lineageTag: a5cfecb2-e0eb-510f-ad4c-76bfe32db25e
+
+	measure 'Warranty Cost % of Direct Cost' = DIVIDE ( [Warranty Cost], [Direct Cost] )
+		formatString: 0.0%
+		displayFolder: 04 Financial
+		lineageTag: 196f91f5-6850-513b-9dcb-34c13c8a18c1
+
+	measure 'Revenue Contribution %' = DIVIDE ( [Service Revenue], CALCULATE ( [Service Revenue], ALLSELECTED ( DimRegion ) ) )
+		formatString: 0.0%
+		displayFolder: 04 Financial
+		lineageTag: a89575cc-2ac9-5f26-82a5-45e1730cddaf
+
+	measure 'Customer Revenue Share %' = DIVIDE ( [Service Revenue], CALCULATE ( [Service Revenue], ALLSELECTED ( DimCustomer ) ) )
+		formatString: 0.00%
+		displayFolder: 04 Financial
+		lineageTag: 66fbc706-69af-5d0d-a7c4-7d61c6bf7356
+
+	measure 'Revenue YTD' = CALCULATE ( [Service Revenue], DATESYTD ( DimDate[Date] ) )
+		formatString: $#,0
+		displayFolder: 05 Time Intelligence
+		lineageTag: 2a313249-c205-5e21-be22-87999284b649
+
+	/// Fiscal year ends 31 March
+	measure 'Revenue FYTD' = CALCULATE ( [Service Revenue], DATESYTD ( DimDate[Date], "3/31" ) )
+		formatString: $#,0
+		displayFolder: 05 Time Intelligence
+		lineageTag: 763ed236-a47c-5c8b-a028-4a44ed3347ec
+
+	measure 'Revenue PY' = CALCULATE ( [Service Revenue], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+		formatString: $#,0
+		displayFolder: 05 Time Intelligence
+		lineageTag: e7c7c0b9-54b3-52ba-943b-45f1cf1e0ac7
+
+	measure 'Revenue YTD PY' = CALCULATE ( [Revenue YTD], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+		formatString: $#,0
+		displayFolder: 05 Time Intelligence
+		lineageTag: 1c9c2828-a418-5977-83c9-e5115f61f795
+
+	measure 'Revenue YoY %' = DIVIDE ( [Service Revenue] - [Revenue PY], [Revenue PY] )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 05 Time Intelligence
+		lineageTag: ba81c40b-9c03-5b9f-8b30-b70041bdffe9
+
+	measure 'Revenue YTD YoY %' = DIVIDE ( [Revenue YTD] - [Revenue YTD PY], [Revenue YTD PY] )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 05 Time Intelligence
+		lineageTag: 493978b5-57a1-5b28-a8e8-ce985d50e2f3
+
+	measure 'Revenue PM' = CALCULATE ( [Service Revenue], DATEADD ( DimDate[Date], -1, MONTH ) )
+		formatString: $#,0
+		displayFolder: 05 Time Intelligence
+		lineageTag: 79da289d-69a5-540d-bd29-570e26cb2317
+
+	measure 'Revenue MoM %' = DIVIDE ( [Service Revenue] - [Revenue PM], [Revenue PM] )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 05 Time Intelligence
+		lineageTag: 342b93fb-f98e-5f5c-b835-7d8e27c553ef
+
+	measure 'Rolling 3-Month Revenue' =
+			CALCULATE (
+			    [Service Revenue],
+			    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -3, MONTH )
+			)
+		formatString: $#,0
+		displayFolder: 05 Time Intelligence
+		lineageTag: fa4311ab-e410-5da8-b1a8-2f856e454e50
+
+	measure 'Rolling 12-Month Revenue' =
+			CALCULATE (
+			    [Service Revenue],
+			    DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -12, MONTH )
+			)
+		formatString: $#,0
+		displayFolder: 05 Time Intelligence
+		lineageTag: 31dbfd9a-b1e8-52f4-a755-32a1a0db0d4f
+
+	measure 'Revenue Target' = SUM ( FactTargets[RevenueTarget] )
+		formatString: $#,0
+		displayFolder: 06 Targets & Performance
+		lineageTag: 20854ad5-3d8a-5ef1-a579-8d996386a2b4
+
+	measure 'Revenue Variance' = [Service Revenue] - [Revenue Target]
+		formatString: $#,0;($#,0)
+		displayFolder: 06 Targets & Performance
+		lineageTag: 5acc5a62-63d4-5257-95f9-4847870ab1d5
+
+	measure 'Revenue Achievement %' = DIVIDE ( [Service Revenue], [Revenue Target] )
+		formatString: 0.0%
+		displayFolder: 06 Targets & Performance
+		lineageTag: 39f7a9a1-6749-593c-b3c5-1c530198880a
+
+	/// Average of the regional SLA targets in the current filter
+	/// (90% for most regions, 92% for Toronto).
+	measure 'SLA Target' = AVERAGE ( FactTargets[SLATarget] )
+		formatString: 0.0%
+		displayFolder: 06 Targets & Performance
+		lineageTag: 99297bda-5295-5f01-a588-e15f5ed07430
+
+	measure 'SLA Variance (pts)' = [SLA Compliance %] - [SLA Target]
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 06 Targets & Performance
+		lineageTag: ad0a065b-629a-577e-9e84-9305b0bea903
+
+	measure 'CSAT Target' = AVERAGE ( FactTargets[CSATTarget] )
+		formatString: 0.00
+		displayFolder: 06 Targets & Performance
+		lineageTag: a86e3723-fd54-58f8-b2f3-5b09f7c5d427
+
+	measure 'CSAT Variance' = [Avg CSAT] - [CSAT Target]
+		formatString: +0.00;-0.00;0.00
+		displayFolder: 06 Targets & Performance
+		lineageTag: 1a477dc3-e6b8-5dd5-a093-a1506e8ad541
+
+	measure 'Backlog Target' =
+			VAR LastMonth = INT ( MAX ( FactBacklogSnapshot[SnapshotDateKey] ) / 100 )   // e.g. 202609
+			RETURN
+			    CALCULATE (
+			        SUM ( FactTargets[BacklogTarget] ),
+			        REMOVEFILTERS ( DimDate ),
+			        INT ( FactTargets[MonthStartDateKey] / 100 ) = LastMonth
+			    )
+		formatString: #,0
+		displayFolder: 06 Targets & Performance
+		lineageTag: 6e88d115-e535-5c6a-ad16-b9f28ffc5363
+
+	measure 'Backlog vs Target' = [Backlog (Month-End Snapshot)] - [Backlog Target]
+		formatString: +#,0;-#,0;0
+		displayFolder: 06 Targets & Performance
+		lineageTag: a984dbe0-e2dc-5757-b455-c2f2fc9322c3
+
+	measure 'Active Technicians' =
+			CALCULATE (
+			    DISTINCTCOUNT ( FactServiceRequests[TechnicianKey] ),
+			    FactServiceRequests[TechnicianKey] > 0,
+			    FactServiceRequests[IsClosed] = 1,
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: #,0
+		displayFolder: 06 Targets & Performance
+		lineageTag: 1343db11-c69a-5cf0-9b82-3d8c9f6b7d0b
+
+	/// Average over months so a full year is not divided by one headcount.
+	measure 'Completed per Technician per Month' =
+			AVERAGEX (
+			    VALUES ( DimDate[YearMonthKey] ),
+			    DIVIDE ( [Completed Requests], [Active Technicians] )
+			)
+		formatString: #,0.0
+		displayFolder: 06 Targets & Performance
+		lineageTag: 79b70235-e2f2-5510-b7b4-7645ac28f38c
+
+	measure 'Productivity Target' = AVERAGE ( FactTargets[ProductivityTarget] )
+		formatString: #,0
+		displayFolder: 06 Targets & Performance
+		lineageTag: feb8e45e-ea9c-561a-9f3a-4d6c9296dd1b
+
+	measure 'Revenue per Technician' =
+			DIVIDE (
+			    CALCULATE (
+			        [Service Revenue],
+			        USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			    ),
+			    [Active Technicians]
+			)
+		formatString: $#,0
+		displayFolder: 06 Targets & Performance
+		lineageTag: a0231413-fafa-544f-986e-8cc6c9287e50
+
+	/// Composite 0-100 score: each KPI scored vs target, capped at 110% so one
+	/// great number cannot hide a bad one. Equal weights (document them!).
+	measure 'Regional Performance Score' =
+			VAR RevScore     = MIN ( [Revenue Achievement %], 1.1 )
+			VAR SLAScore     = MIN ( DIVIDE ( [SLA Compliance %], [SLA Target] ), 1.1 )
+			VAR CSATScore    = MIN ( DIVIDE ( [Avg CSAT], [CSAT Target] ), 1.1 )
+			VAR BacklogScore = MIN ( DIVIDE ( [Backlog Target], [Backlog (Month-End Snapshot)] ), 1.1 )
+			RETURN
+			    ( RevScore + SLAScore + CSATScore + BacklogScore ) / 4 * 100
+		formatString: 0
+		displayFolder: 06 Targets & Performance
+		lineageTag: 8a8bbb23-6f87-5fde-a0ac-49c203e93295
+
+	measure 'Region Rank (SLA)' =
+			IF (
+			    ISINSCOPE ( DimRegion[Region] ),
+			    RANKX ( ALLSELECTED ( DimRegion[Region] ), [SLA Compliance %], , DESC, DENSE )
+			)
+		formatString: 0
+		displayFolder: 07 Ranking
+		lineageTag: 8fe1aa19-8427-5b5e-bf31-23ad0db5803b
+
+	measure 'Region Rank (Revenue)' =
+			IF (
+			    ISINSCOPE ( DimRegion[Region] ),
+			    RANKX ( ALLSELECTED ( DimRegion[Region] ), [Service Revenue], , DESC, DENSE )
+			)
+		formatString: 0
+		displayFolder: 07 Ranking
+		lineageTag: 11b45679-030e-5c27-81c0-6aea3e1258e9
+
+	/// Only rank technicians with enough jobs to be statistically meaningful,
+	/// and rank within whatever region/skill filter is applied.
+	measure 'Technician Rank (FTF)' =
+			VAR MinJobs = 150
+			RETURN
+			    IF (
+			        ISINSCOPE ( DimTechnician[TechnicianName] ) && [Completed Requests] >= MinJobs,
+			        RANKX (
+			            FILTER (
+			                ALLSELECTED ( DimTechnician[TechnicianName] ),
+			                [Completed Requests] >= MinJobs
+			            ),
+			            [First-Time Fix Rate], , DESC, DENSE
+			        )
+			    )
+		formatString: 0
+		displayFolder: 07 Ranking
+		lineageTag: 88a93c60-b23d-5c06-9ece-7f671aa0cd09
+
+	measure 'Technician Rank (Revenue)' =
+			IF (
+			    ISINSCOPE ( DimTechnician[TechnicianName] ),
+			    RANKX ( ALLSELECTED ( DimTechnician[TechnicianName] ), [Revenue per Technician], , DESC, DENSE )
+			)
+		formatString: 0
+		displayFolder: 07 Ranking
+		lineageTag: 2c71d8f4-8161-5f58-9b62-f57e366eccfe
+
+	measure 'Emergency Repair Requests' = CALCULATE ( [Total Requests], DimServiceType[ServiceType] = "Emergency Repair" )
+		formatString: #,0
+		displayFolder: 08 Root Cause
+		lineageTag: 8b4e1cd7-7eee-530d-8d6d-1f24d9d37312
+
+	measure 'Emergency Share of Volume' = DIVIDE ( [Emergency Repair Requests], [Total Requests] )
+		formatString: 0.0%
+		displayFolder: 08 Root Cause
+		lineageTag: cd35ea66-1071-5274-a1bd-5400acaa30ed
+
+	measure 'Emergency Repair YoY %' =
+			VAR PY = CALCULATE ( [Emergency Repair Requests], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+			RETURN DIVIDE ( [Emergency Repair Requests] - PY, PY )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 08 Root Cause
+		lineageTag: 65fc647e-e8bb-5cd7-afcf-ebfdd81e001c
+
+	measure 'Requests per Active Technician' = DIVIDE ( [Total Requests], [Active Technicians] )
+		formatString: #,0.0
+		displayFolder: 08 Root Cause
+		lineageTag: 4b68193e-7c83-5d45-9b54-7d49e3596c10
+
+	measure 'SLA Compliance % (All Regions)' = CALCULATE ( [SLA Compliance %], REMOVEFILTERS ( DimRegion ) )
+		formatString: 0.0%
+		displayFolder: 08 Root Cause
+		lineageTag: 0a827db9-ef1e-5a6a-bd18-5ab5cd95b6ec
+
+	measure 'SLA Gap vs Company' = [SLA Compliance %] - [SLA Compliance % (All Regions)]
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 08 Root Cause
+		lineageTag: 0ec1f375-2a4d-583a-9bb3-ee31d473c02b
+
+	measure 'Regions Below SLA Target' = COUNTROWS ( FILTER ( VALUES ( DimRegion[Region] ), [SLA Compliance %] < [SLA Target] ) )
+		formatString: 0
+		displayFolder: 08 Root Cause
+		lineageTag: a828601d-2c84-516b-8206-dda9776ad5d6
+
+	measure 'Selected KPI Value' =
+			SWITCH (
+			    SELECTEDVALUE ( 'KPI Selector'[KPI], "Service Revenue" ),
+			    "Service Revenue",      [Service Revenue],
+			    "SLA Compliance %",     [SLA Compliance %],
+			    "Avg CSAT",             [Avg CSAT],
+			    "Backlog",              [Backlog (Month-End Snapshot)],
+			    "First-Time Fix Rate",  [First-Time Fix Rate]
+			)
+		displayFolder: 09 Dynamic / UX
+		lineageTag: d2d83ef7-d35d-5d94-a47c-8a51638ad148
+
+	measure 'Selected KPI Title' =
+			SELECTEDVALUE ( 'KPI Selector'[KPI], "Service Revenue" ) & " by Month - "
+			    & SELECTEDVALUE ( DimRegion[Region], "All Regions" )
+		displayFolder: 09 Dynamic / UX
+		lineageTag: 4abba9e4-ccb9-5b74-8691-c47d4631d583
+
+	/// Use in Conditional formatting > Field value
+	measure 'SLA Status Color' =
+			VAR Gap = [SLA Variance (pts)]
+			RETURN
+			    SWITCH ( TRUE (), ISBLANK ( Gap ), BLANK (), Gap >= 0, "#2E7D32", Gap >= -0.03, "#8A5300", "#B71C1C" )
+		displayFolder: 09 Dynamic / UX
+		lineageTag: d9fa75c2-0a57-5c5b-ad8f-8b78b0b6a2f8
+
+	measure 'SLA Status Icon' =
+			VAR Gap = [SLA Variance (pts)]
+			RETURN
+			    SWITCH ( TRUE (), ISBLANK ( Gap ), BLANK (), Gap >= 0, "● On target", Gap >= -0.03, "▲ Watch", "▼ Below target" )
+		displayFolder: 09 Dynamic / UX
+		lineageTag: 87e0d50f-a5b8-54a3-9a8f-b9f78ca4b917
+
+	measure 'Data As Of' = "Data as of " & FORMAT ( MAX ( FactServiceRequests[CreatedAt] ), "d mmm yyyy" )
+		displayFolder: 09 Dynamic / UX
+		lineageTag: bbfa5f0c-9f99-5c1d-8cd5-3b56c6e9bddb
+
+	measure 'Report Title Region' = "Regional Performance - " & SELECTEDVALUE ( DimRegion[Region], "All Regions" )
+		displayFolder: 09 Dynamic / UX
+		lineageTag: c4d71b21-a28c-585f-a41e-4c4a5a81db8b
+
+	/// Light red background for regions more than 3 pts below their SLA target.
+	/// Use in Conditional formatting > Background color > Field value on every table column.
+	measure 'Row Highlight Color' = IF ( [SLA Variance (pts)] < -0.03, "#FDECEC" )
+		displayFolder: 09 Dynamic / UX
+		lineageTag: d119d8c1-7b4a-5c95-b72a-b9cf0567cca0
+
+	measure 'Card Sub Revenue' =
+			VAR v = [Revenue YoY %]
+			RETURN IF ( v >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( v ), "0.0%" ) & " vs PY"
+		displayFolder: 10 Card Labels
+		lineageTag: 3c6acc6f-47d7-559b-b890-0655b9cbf192
+
+	measure 'Card Sub SLA' =
+			VAR d = [SLA Compliance %] - [SLA Compliance % PY]
+			RETURN
+			    "Target " & FORMAT ( [SLA Target], "0.0%" ) & " · "
+			        & IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ) * 100, "0.0" ) & " pts vs PY"
+		displayFolder: 10 Card Labels
+		lineageTag: 553dcbe2-0f52-5f2d-b146-f53b12de921a
+
+	measure 'Card Sub CSAT' = "Target " & FORMAT ( [CSAT Target], "0.00" ) & " · PY " & FORMAT ( [Avg CSAT PY], "0.00" )
+		displayFolder: 10 Card Labels
+		lineageTag: e5f4d1e2-71fc-5943-a907-937886e44bd7
+
+	measure 'Card Sub Backlog' =
+			VAR d = [Backlog vs Target]
+			RETURN
+			    IF ( d > 0, "▲ " & d & " over target (", "▼ " & ABS ( d ) & " under target (" )
+			        & [Backlog Target] & ")"
+		displayFolder: 10 Card Labels
+		lineageTag: fca62137-d7a1-5734-ab8d-11e6ff70980d
+
+	measure 'Card Sub Resolution' = "PY " & FORMAT ( CALCULATE ( [Avg Resolution Hours], SAMEPERIODLASTYEAR ( DimDate[Date] ) ), "0.0" ) & " h"
+		displayFolder: 10 Card Labels
+		lineageTag: 55d3b60f-d5e8-580c-b558-46b9cc55dc83
+
+	measure 'Card Sub Completed' =
+			VAR py = CALCULATE ( [Completed Requests], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+			VAR v = DIVIDE ( [Completed Requests] - py, py )
+			RETURN IF ( v >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( v ), "0.0%" ) & " vs PY"
+		displayFolder: 10 Card Labels
+		lineageTag: dabe978c-238e-5c54-8358-fc399527d79e
+
+	measure 'Card Color Revenue' = IF ( [Revenue YoY %] >= 0, "#2E7D32", "#B71C1C" )
+		displayFolder: 10 Card Labels
+		lineageTag: c85a6890-129f-502d-a306-67966228cb06
+
+	measure 'Card Color Backlog' = IF ( [Backlog vs Target] > 0, "#B71C1C", "#2E7D32" )
+		displayFolder: 10 Card Labels
+		lineageTag: e3973aa2-7163-5200-a0d2-222ec0a59606
+
+	measure 'Card Color Completed' =
+			VAR py = CALCULATE ( [Completed Requests], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+			RETURN IF ( [Completed Requests] >= py, "#2E7D32", "#B71C1C" )
+		displayFolder: 10 Card Labels
+		lineageTag: 219cc06c-e46c-5e40-95f9-b7d0c0f5174d
+
+	column Value
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 088679ef-b233-56d4-b64e-e2de177cbf0f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Measures = calculated
+		mode: import
+		source = ROW ( "Value", 0 )
+
+	annotation PBI_Id = measures
+

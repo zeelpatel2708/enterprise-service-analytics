@@ -1,0 +1,29 @@
+relationship 75d6551e-3044-576f-9f88-3c8c10470f28
+	fromColumn: FactServiceRequests.ServiceTypeKey
+	toColumn: DimServiceType.ServiceTypeKey
+
+relationship 7dd785db-20d0-5751-a73b-6f62a6782330
+	fromColumn: FactServiceRequests.CommunityKey
+	toColumn: DimCommunity.CommunityKey
+
+relationship 1f37acd5-c7f9-534e-b6eb-f761750eaff2
+	fromColumn: FactServiceRequests.ChannelKey
+	toColumn: DimChannel.ChannelKey
+
+relationship 0abe7c56-2d61-5851-9722-582d07063cd9
+	fromColumn: FactServiceRequests.RequestedDateKey
+	toColumn: DimDate.DateKey
+
+relationship d4a3126f-9f52-5238-90fd-dc5f5cda083b
+	isActive: false
+	fromColumn: FactServiceRequests.ClosedDateKey
+	toColumn: DimDate.DateKey
+
+relationship 3197f387-b89d-52a6-bf18-76f48c64a9cd
+	fromColumn: FactBacklogSnapshot.ServiceTypeKey
+	toColumn: DimServiceType.ServiceTypeKey
+
+relationship da4e07ea-3f97-5471-a9d3-cdfa049e1b73
+	fromColumn: FactBacklogSnapshot.SnapshotDateKey
+	toColumn: DimDate.DateKey
+

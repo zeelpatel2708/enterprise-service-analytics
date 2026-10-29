@@ -1,0 +1,188 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "de622e8145baee334a10",
+  "position": {
+    "x": 442,
+    "y": 388,
+    "z": 6,
+    "height": 320,
+    "width": 430,
+    "tabOrder": 6
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "comparison_capabilities"
+                    }
+                  },
+                  "Property": "Question"
+                }
+              },
+              "queryRef": "comparison_capabilities.Question",
+              "nativeQueryRef": "Question"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "comparison_capabilities"
+                    }
+                  },
+                  "Property": "Simulated"
+                }
+              },
+              "queryRef": "comparison_capabilities.Simulated",
+              "nativeQueryRef": "Simulated"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "comparison_capabilities"
+                    }
+                  },
+                  "Property": "Real (Calgary)"
+                }
+              },
+              "queryRef": "comparison_capabilities.Real (Calgary)",
+              "nativeQueryRef": "Real (Calgary)"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "comparison_capabilities"
+                  }
+                },
+                "Property": "Simulated"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "145.49361696463302D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "comparison_capabilities.Question"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'What Each Dataset Can Answer'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "8ff862901907080e2258",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "comparison_capabilities"
+              }
+            },
+            "Property": "Question"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "2035e75e53092a0de892",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "comparison_capabilities"
+              }
+            },
+            "Property": "Simulated"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "03ab8224090ee35709a0",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "comparison_capabilities"
+              }
+            },
+            "Property": "Real (Calgary)"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

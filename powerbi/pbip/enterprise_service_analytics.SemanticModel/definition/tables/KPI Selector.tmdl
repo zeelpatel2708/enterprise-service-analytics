@@ -1,0 +1,40 @@
+table 'KPI Selector'
+	lineageTag: b7ba89a2-d621-5ffc-b50d-c67ff8e5608e
+
+	column KPI
+		dataType: string
+		lineageTag: 819978a0-f8dc-5357-9348-2409f5b1fb72
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [KPI]
+		sortByColumn: Order
+
+		annotation SummarizationSetBy = Automatic
+
+	column Order
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 81dcb766-deed-5980-8c1d-d0156fdee5a1
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Order]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'KPI Selector' = calculated
+		mode: import
+		source =
+				DATATABLE (
+				    "KPI", STRING, "Order", INTEGER,
+				    {
+				        { "Service Revenue", 1 },
+				        { "SLA Compliance %", 2 },
+				        { "Avg CSAT", 3 },
+				        { "Backlog", 4 },
+				        { "First-Time Fix Rate", 5 }
+				    }
+				)
+
+	annotation PBI_Id = kpi_selector
+

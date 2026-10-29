@@ -1,0 +1,192 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "6667bce2e49145932ad9",
+  "position": {
+    "x": 20,
+    "y": 388,
+    "z": 5,
+    "height": 320,
+    "width": 410,
+    "tabOrder": 5
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "comparison_seasonality"
+                    }
+                  },
+                  "Property": "MonthNumber"
+                }
+              },
+              "queryRef": "comparison_seasonality.MonthNumber",
+              "nativeQueryRef": "MonthNumber",
+              "active": true
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "comparison_seasonality"
+                    }
+                  },
+                  "Property": "Edition"
+                }
+              },
+              "queryRef": "comparison_seasonality.Edition",
+              "nativeQueryRef": "Edition"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "comparison_seasonality"
+                        }
+                      },
+                      "Property": "SeasonalityIndex"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(comparison_seasonality.SeasonalityIndex)",
+              "nativeQueryRef": "Sum of SeasonalityIndex"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "comparison_seasonality"
+                  }
+                },
+                "Property": "MonthNumber"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "categoryAxis": [
+        {
+          "properties": {
+            "axisType": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Categorical'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "start": {
+              "expr": {
+                "Literal": {
+                  "Value": "0.7D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Seasonality (1.00 = average month)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "a3af7fdb72dce7158dcb",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "comparison_seasonality"
+              }
+            },
+            "Property": "MonthNumber"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "fd8312a480cc8615c7c9",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "comparison_seasonality"
+                  }
+                },
+                "Property": "SeasonalityIndex"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "a0dd23c1040d4c1a6843",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "comparison_seasonality"
+              }
+            },
+            "Property": "Edition"
+          }
+        },
+        "type": "Categorical"
+      }
+    ],
+    "filterSortOrder": "Ascending"
+  }
+}

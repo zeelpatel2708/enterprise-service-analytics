@@ -1,0 +1,68 @@
+table DimRegion
+	lineageTag: 435540cf-796d-5872-a042-3446a01e8bb0
+
+	column RegionKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c4af57ef-9bc5-5e1f-b8e3-c592edbe5105
+		summarizeBy: none
+		sourceColumn: RegionKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region
+		dataType: string
+		lineageTag: 81ed106a-7da3-5558-91dd-e49d49021652
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column Province
+		dataType: string
+		lineageTag: 831cd563-fb79-5baf-869f-296e262eb664
+		summarizeBy: none
+		sourceColumn: Province
+
+		annotation SummarizationSetBy = Automatic
+
+	column RegionalManager
+		dataType: string
+		lineageTag: 33ea74db-1658-5532-80fc-ce8624e3d4af
+		summarizeBy: none
+		sourceColumn: RegionalManager
+
+		annotation SummarizationSetBy = Automatic
+
+	column RegionalManagerEmail
+		dataType: string
+		lineageTag: b20318aa-ac08-53f5-8961-aafd4ff7873e
+		summarizeBy: none
+		sourceColumn: RegionalManagerEmail
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimRegion = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\model\DimRegion.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"RegionKey", Int64.Type},
+				        {"Region", type text},
+				        {"Province", type text},
+				        {"RegionalManager", type text},
+				        {"RegionalManagerEmail", type text}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

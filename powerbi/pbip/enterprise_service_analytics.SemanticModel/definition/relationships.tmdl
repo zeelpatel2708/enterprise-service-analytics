@@ -1,0 +1,45 @@
+relationship 5f51ac63-6add-58c3-a002-d14842a1e160
+	fromColumn: FactServiceRequests.CustomerKey
+	toColumn: DimCustomer.CustomerKey
+
+relationship c7594791-5d7f-5d8a-b111-a66cac764aa7
+	fromColumn: FactServiceRequests.TechnicianKey
+	toColumn: DimTechnician.TechnicianKey
+
+relationship 85fe3b7f-c98b-5d2f-8e63-fa26c7c7f881
+	fromColumn: FactServiceRequests.RegionKey
+	toColumn: DimRegion.RegionKey
+
+relationship 944881cc-2e9b-5d8f-bece-630b0f854b3c
+	fromColumn: FactServiceRequests.ServiceTypeKey
+	toColumn: DimServiceType.ServiceTypeKey
+
+relationship 9c64f394-f459-5dc2-b492-f15e744c27a1
+	fromColumn: FactServiceRequests.PriorityKey
+	toColumn: DimPriority.PriorityKey
+
+relationship b45ee4db-ee24-57fe-a482-78a157fc621e
+	fromColumn: FactServiceRequests.CreatedDateKey
+	toColumn: DimDate.DateKey
+
+relationship 5af05002-2939-5bb2-9f00-1c2ee540d154
+	isActive: false
+	fromColumn: FactServiceRequests.ClosedDateKey
+	toColumn: DimDate.DateKey
+
+relationship 44ef4983-6519-5a8e-a412-d8f63b911eb3
+	fromColumn: FactTargets.RegionKey
+	toColumn: DimRegion.RegionKey
+
+relationship 19ee5a4f-4468-5ee7-accf-f50fd9669868
+	fromColumn: FactTargets.MonthStartDateKey
+	toColumn: DimDate.DateKey
+
+relationship 66ceec85-eb06-5200-921b-bfbbe358c427
+	fromColumn: FactBacklogSnapshot.RegionKey
+	toColumn: DimRegion.RegionKey
+
+relationship c0d83e94-8328-5689-9d45-4b05bc3e7b66
+	fromColumn: FactBacklogSnapshot.SnapshotDateKey
+	toColumn: DimDate.DateKey
+

@@ -1,0 +1,162 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "58f4d31004ed00d35cd5",
+  "position": {
+    "x": 532,
+    "y": 76,
+    "z": 4,
+    "height": 300,
+    "width": 728,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "comparison_resolution_distribution"
+                    }
+                  },
+                  "Property": "Bucket"
+                }
+              },
+              "queryRef": "comparison_resolution_distribution.Bucket",
+              "nativeQueryRef": "Bucket",
+              "active": true
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "comparison_resolution_distribution"
+                    }
+                  },
+                  "Property": "Edition"
+                }
+              },
+              "queryRef": "comparison_resolution_distribution.Edition",
+              "nativeQueryRef": "Edition"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "comparison_resolution_distribution"
+                        }
+                      },
+                      "Property": "ShareOfClosed"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(comparison_resolution_distribution.ShareOfClosed)",
+              "nativeQueryRef": "Sum of ShareOfClosed"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'How Long Does It Take to Close a Request?'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "e494cf19e70835000d07",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "comparison_resolution_distribution"
+              }
+            },
+            "Property": "Bucket"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "ae83da8f4d0d26898cc9",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "comparison_resolution_distribution"
+                  }
+                },
+                "Property": "ShareOfClosed"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "886641e2a89b099d3740",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "comparison_resolution_distribution"
+              }
+            },
+            "Property": "Edition"
+          }
+        },
+        "type": "Categorical"
+      }
+    ],
+    "filterSortOrder": "Ascending"
+  }
+}

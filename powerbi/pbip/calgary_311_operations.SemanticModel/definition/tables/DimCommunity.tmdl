@@ -1,0 +1,72 @@
+table DimCommunity
+	lineageTag: 920d4831-c4da-5163-ac22-c2467b511bac
+
+	column CommunityKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 500c7f89-8ac2-5dae-bf8a-ac53dea76faf
+		summarizeBy: none
+		sourceColumn: CommunityKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CommunityCode
+		dataType: string
+		lineageTag: ed7fec6d-3061-5b14-ae53-f66317b44cca
+		summarizeBy: none
+		sourceColumn: CommunityCode
+
+		annotation SummarizationSetBy = Automatic
+
+	column CommunityName
+		dataType: string
+		lineageTag: 70694c31-c03b-55d3-a4ac-63e4e1eaf05d
+		summarizeBy: none
+		sourceColumn: CommunityName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Latitude
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 7ea0efef-e198-534a-bb8c-9bc997984394
+		dataCategory: Latitude
+		summarizeBy: none
+		sourceColumn: Latitude
+
+		annotation SummarizationSetBy = Automatic
+
+	column Longitude
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 4c483318-d1ce-50ce-a13b-acf221a4aca7
+		dataCategory: Longitude
+		summarizeBy: none
+		sourceColumn: Longitude
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimCommunity = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\calgary\model\DimCommunity.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"CommunityKey", Int64.Type},
+				        {"CommunityCode", type text},
+				        {"CommunityName", type text},
+				        {"Latitude", type number},
+				        {"Longitude", type number}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

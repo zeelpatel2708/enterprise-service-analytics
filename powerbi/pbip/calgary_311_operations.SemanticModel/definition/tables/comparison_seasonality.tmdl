@@ -1,0 +1,50 @@
+table comparison_seasonality
+	lineageTag: 5979fccb-9a20-5f14-8eec-8326a6c7fb18
+
+	column Edition
+		dataType: string
+		lineageTag: 742a9834-c0a3-5dbc-975e-d342eafc9d02
+		summarizeBy: none
+		sourceColumn: Edition
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: f31c11e6-2f3e-5a3c-85f8-b52f188b8dd5
+		summarizeBy: none
+		sourceColumn: MonthNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column SeasonalityIndex
+		dataType: double
+		formatString: #,0.00
+		lineageTag: d4683fcf-bf23-5644-b910-daf891322d13
+		summarizeBy: sum
+		sourceColumn: SeasonalityIndex
+
+		annotation SummarizationSetBy = Automatic
+
+	partition comparison_seasonality = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\comparison\comparison_seasonality.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"Edition", type text},
+				        {"MonthNumber", Int64.Type},
+				        {"SeasonalityIndex", type number}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

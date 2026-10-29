@@ -1,0 +1,295 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "f4ce7eeeb24632470920",
+  "position": {
+    "x": 438,
+    "y": 388,
+    "z": 2004,
+    "height": 320,
+    "width": 410,
+    "tabOrder": 2004
+  },
+  "visual": {
+    "visualType": "decompositionTreeVisual",
+    "query": {
+      "queryState": {
+        "Analyze": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "SLA Breaches"
+                }
+              },
+              "queryRef": "_Measures.SLA Breaches",
+              "nativeQueryRef": "SLA Breaches"
+            }
+          ]
+        },
+        "ExplainBy": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimServiceType"
+                    }
+                  },
+                  "Property": "ServiceCategory"
+                }
+              },
+              "queryRef": "DimServiceType.ServiceCategory",
+              "nativeQueryRef": "ServiceCategory",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimPriority"
+                    }
+                  },
+                  "Property": "Priority"
+                }
+              },
+              "queryRef": "DimPriority.Priority",
+              "nativeQueryRef": "Priority",
+              "active": false
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimTechnician"
+                    }
+                  },
+                  "Property": "SkillLevel"
+                }
+              },
+              "queryRef": "DimTechnician.SkillLevel",
+              "nativeQueryRef": "SkillLevel",
+              "active": false
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DimDate"
+                    }
+                  },
+                  "Property": "DayOfWeek"
+                }
+              },
+              "queryRef": "DimDate.DayOfWeek",
+              "nativeQueryRef": "DayOfWeek",
+              "active": false
+            }
+          ]
+        }
+      }
+    },
+    "expansionStates": [
+      {
+        "roles": [
+          "ExplainBy"
+        ],
+        "levels": [
+          {
+            "queryRefs": [
+              "DimServiceType.ServiceCategory"
+            ],
+            "isCollapsed": true,
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "DimPriority.Priority"
+            ],
+            "isCollapsed": true
+          },
+          {
+            "queryRefs": [
+              "DimTechnician.SkillLevel"
+            ],
+            "isCollapsed": true
+          },
+          {
+            "queryRefs": [
+              "DimDate.DayOfWeek"
+            ],
+            "isCollapsed": true
+          }
+        ],
+        "root": {}
+      }
+    ],
+    "objects": {
+      "tree": [
+        {
+          "properties": {
+            "effectiveBarsPerLevel": {
+              "expr": {
+                "Literal": {
+                  "Value": "3L"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'4 · Where Breaches Happen (Mar–Sep 2026)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "7ce71f169990bdc71b3d",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "SLA Breaches"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "71ceffba9a3d12dcbbe0",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimServiceType"
+              }
+            },
+            "Property": "ServiceCategory"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "e7ba0ad4b944084c1508",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimPriority"
+              }
+            },
+            "Property": "Priority"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "31f2b88461bc69284018",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimTechnician"
+              }
+            },
+            "Property": "SkillLevel"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "6523bb32cc5056905d6c",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimDate"
+              }
+            },
+            "Property": "DayOfWeek"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "68c2cbd0c819086420c1",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DimDate"
+              }
+            },
+            "Property": "Date"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "d",
+              "Entity": "DimDate",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Comparison": {
+                  "ComparisonKind": 2,
+                  "Left": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "d"
+                        }
+                      },
+                      "Property": "Date"
+                    }
+                  },
+                  "Right": {
+                    "DateSpan": {
+                      "Expression": {
+                        "Literal": {
+                          "Value": "datetime'2026-03-01T00:00:00'"
+                        }
+                      },
+                      "TimeUnit": 5
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
+  }
+}

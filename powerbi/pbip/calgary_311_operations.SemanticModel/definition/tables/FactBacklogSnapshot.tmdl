@@ -1,0 +1,76 @@
+table FactBacklogSnapshot
+	lineageTag: d12804e0-d2fa-5174-9990-9a056dca89be
+
+	column ServiceTypeKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 6af73fff-c3d7-5d31-8f83-fa14f3d15e72
+		summarizeBy: none
+		sourceColumn: ServiceTypeKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column SnapshotDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: bffc6cbb-b7e0-5e8e-9521-a4bdafec6df5
+		summarizeBy: none
+		sourceColumn: SnapshotDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column OpenRequests
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 26d4bdb6-530a-59e4-9415-753173fc0293
+		summarizeBy: sum
+		sourceColumn: OpenRequests
+
+		annotation SummarizationSetBy = Automatic
+
+	column OpenPastBenchmark
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4b6b19b7-8347-5ebd-80c3-cadd5fc71978
+		summarizeBy: sum
+		sourceColumn: OpenPastBenchmark
+
+		annotation SummarizationSetBy = Automatic
+
+	column OpenOver90Days
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 2f5a340c-ad15-567e-81f1-45f9597d7bcc
+		summarizeBy: sum
+		sourceColumn: OpenOver90Days
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactBacklogSnapshot = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\calgary\model\FactBacklogSnapshot.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"ServiceTypeKey", Int64.Type},
+				        {"SnapshotDateKey", Int64.Type},
+				        {"OpenRequests", Int64.Type},
+				        {"OpenPastBenchmark", Int64.Type},
+				        {"OpenOver90Days", Int64.Type}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

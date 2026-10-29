@@ -1,0 +1,60 @@
+table comparison_resolution_distribution
+	lineageTag: aa7de095-3cb2-5d23-b2e1-e41315426fc2
+
+	column Edition
+		dataType: string
+		lineageTag: acb807ab-0b69-54b8-a729-91ba25f9829d
+		summarizeBy: none
+		sourceColumn: Edition
+
+		annotation SummarizationSetBy = Automatic
+
+	column Bucket
+		dataType: string
+		lineageTag: 4165d067-b640-5b80-bc3b-3f30ee7685bf
+		summarizeBy: none
+		sourceColumn: Bucket
+		sortByColumn: BucketOrder
+
+		annotation SummarizationSetBy = Automatic
+
+	column BucketOrder
+		dataType: int64
+		formatString: 0
+		lineageTag: 3a35e41c-285b-52e6-8852-d7bc971e2d2f
+		summarizeBy: none
+		sourceColumn: BucketOrder
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShareOfClosed
+		dataType: double
+		formatString: #,0.00%;-#,0.00%;#,0.00%
+		lineageTag: 760184ea-9529-55ce-9b5a-81b1999589e4
+		summarizeBy: sum
+		sourceColumn: ShareOfClosed
+
+		annotation SummarizationSetBy = Automatic
+
+	partition comparison_resolution_distribution = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\comparison\comparison_resolution_distribution.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"Edition", type text},
+				        {"Bucket", type text},
+				        {"BucketOrder", Int64.Type},
+				        {"ShareOfClosed", type number}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

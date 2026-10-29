@@ -1,0 +1,12 @@
+role 'Regional Manager'
+	modelPermission: read
+
+	tablePermission DimRegion =
+			DimRegion[RegionKey]
+			    IN CALCULATETABLE (
+			        VALUES ( SecurityUserRegion[RegionKey] ),
+			        SecurityUserRegion[UserEmail] = USERPRINCIPALNAME ()
+			    )
+
+	annotation PBI_Id = 91b0dc26-c96d-518a-89e5-5d6a1b8b0977
+

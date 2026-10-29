@@ -1,0 +1,60 @@
+table DimServiceType
+	lineageTag: 48f6b797-efe7-526d-9733-6d78138dbe45
+
+	column ServiceTypeKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c5c59078-2987-5fe6-88a0-a541812251f7
+		summarizeBy: none
+		sourceColumn: ServiceTypeKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ServiceCategory
+		dataType: string
+		lineageTag: 4b730e2b-da07-55d5-8c61-defe98e17f4b
+		summarizeBy: none
+		sourceColumn: ServiceCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column ServiceType
+		dataType: string
+		lineageTag: 935aa463-18ff-5a1c-9852-5f2656fa6c22
+		summarizeBy: none
+		sourceColumn: ServiceType
+
+		annotation SummarizationSetBy = Automatic
+
+	column ListPrice2024
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: ea4cde8e-653b-5b02-a634-15bc6867c386
+		summarizeBy: none
+		sourceColumn: ListPrice2024
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimServiceType = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\model\DimServiceType.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"ServiceTypeKey", Int64.Type},
+				        {"ServiceCategory", type text},
+				        {"ServiceType", type text},
+				        {"ListPrice2024", Currency.Type}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Calgary 311 Operations (Edition B)"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "7ef6af4a-3e30-5c38-bb3e-c5296000646e"
+  }
+}

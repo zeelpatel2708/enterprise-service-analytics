@@ -1,0 +1,298 @@
+table _Measures
+	lineageTag: 6ac858df-c457-58fc-a9d4-fd86119e6e61
+
+	measure 'Total Requests' = COUNTROWS ( FactServiceRequests )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 210b6cca-cd5f-5563-8ae6-fb6ba7d448e7
+
+	measure 'Closed Requests' =
+			CALCULATE (
+			    COUNTROWS ( FactServiceRequests ),
+			    FactServiceRequests[IsClosed] = 1,
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: d1756390-8757-5bf4-a1b1-b094eb67eac5
+
+	measure 'Open Requests (Current)' = CALCULATE ( COUNTROWS ( FactServiceRequests ), FactServiceRequests[IsOpen] = 1, REMOVEFILTERS ( DimDate ) )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 2314a292-ef0c-5953-ad31-a908b1a99308
+
+	measure 'Backlog (Month-End Snapshot)' =
+			VAR LastSnapshot = MAX ( FactBacklogSnapshot[SnapshotDateKey] )
+			RETURN
+			    CALCULATE ( SUM ( FactBacklogSnapshot[OpenRequests] ), FactBacklogSnapshot[SnapshotDateKey] = LastSnapshot )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: c491bd39-ecb5-59f9-8f3b-e6b06d0e527f
+
+	measure 'Backlog Over 90 Days' =
+			VAR LastSnapshot = MAX ( FactBacklogSnapshot[SnapshotDateKey] )
+			RETURN
+			    CALCULATE ( SUM ( FactBacklogSnapshot[OpenOver90Days] ), FactBacklogSnapshot[SnapshotDateKey] = LastSnapshot )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: ca45c6dc-cbf7-5c76-bce5-481eb5d2ae8c
+
+	measure 'Backlog Over 90 Days %' = DIVIDE ( [Backlog Over 90 Days], [Backlog (Month-End Snapshot)] )
+		formatString: 0.0%
+		displayFolder: 01 Volume
+		lineageTag: 6606de41-1758-5a00-a377-86ab445d4b13
+
+	measure 'Stale Open Requests (>365d)' = CALCULATE ( COUNTROWS ( FactServiceRequests ), FactServiceRequests[IsStaleOpen] = 1, REMOVEFILTERS ( DimDate ) )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 1f50cdb2-5619-54a9-93d9-5e8a516c7ec1
+
+	measure 'Requests PY' = CALCULATE ( [Total Requests], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 4759e770-5327-55eb-91ac-6a4dbc84a5f9
+
+	measure 'Requests YoY %' = DIVIDE ( [Total Requests] - [Requests PY], [Requests PY] )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 01 Volume
+		lineageTag: 28441989-b1ec-5bb3-a571-3fa486a500c3
+
+	measure 'Requests PM' = CALCULATE ( [Total Requests], DATEADD ( DimDate[Date], -1, MONTH ) )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: b6b1e14d-a436-5249-82f7-0d0c79f74329
+
+	measure 'Requests MoM %' = DIVIDE ( [Total Requests] - [Requests PM], [Requests PM] )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 01 Volume
+		lineageTag: 13ac6d2b-693a-5f81-a6c2-9d10033a2007
+
+	measure 'Requests YTD' = CALCULATE ( [Total Requests], DATESYTD ( DimDate[Date] ) )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 54c0eaf1-4afe-5aee-9b44-986e9fa4f03e
+
+	measure 'Rolling 12-Month Requests' = CALCULATE ( [Total Requests], DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -12, MONTH ) )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 11ca34cd-e8e1-5282-8c76-47e9a0306cb6
+
+	measure 'Avg Requests per Day' = DIVIDE ( [Total Requests], COUNTROWS ( DimDate ) )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: c3efe7c4-f3cc-547b-8ced-4b48947b7f44
+
+	measure 'Avg Resolution Days' =
+			CALCULATE (
+			    AVERAGE ( FactServiceRequests[ResolutionDays] ),
+			    FactServiceRequests[IsDuplicateRequest] = 0,
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: #,0.0
+		displayFolder: 02 Service Level
+		lineageTag: c4f18e70-0214-5590-8c64-2d19a6bf1b3b
+
+	measure 'Median Resolution Days' =
+			CALCULATE (
+			    MEDIAN ( FactServiceRequests[ResolutionDays] ),
+			    FactServiceRequests[IsDuplicateRequest] = 0,
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: #,0.0
+		displayFolder: 02 Service Level
+		lineageTag: 9de12e36-bdac-5412-8818-dc6ab9ecb75a
+
+	measure 'P90 Resolution Days' =
+			CALCULATE (
+			    PERCENTILE.INC ( FactServiceRequests[ResolutionDays], 0.9 ),
+			    FactServiceRequests[IsDuplicateRequest] = 0,
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: #,0
+		displayFolder: 02 Service Level
+		lineageTag: 809f8246-baeb-5d6b-88bf-4605819dc505
+
+	measure 'Same-Day Closure %' =
+			CALCULATE (
+			    DIVIDE ( SUM ( FactServiceRequests[SameDayClosure] ), COUNT ( FactServiceRequests[SameDayClosure] ) ),
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: 0.0%
+		displayFolder: 02 Service Level
+		lineageTag: 05e39035-8a8b-54a8-88f2-468bd4f779e7
+
+	/// Share closed within the service's 2024 P80 resolution time (derived benchmark).
+	measure 'Within Benchmark %' =
+			CALCULATE (
+			    DIVIDE ( SUM ( FactServiceRequests[WithinBenchmark] ), COUNT ( FactServiceRequests[WithinBenchmark] ) ),
+			    USERELATIONSHIP ( FactServiceRequests[ClosedDateKey], DimDate[DateKey] )
+			)
+		formatString: 0.0%
+		displayFolder: 02 Service Level
+		lineageTag: b17268c3-a104-53d4-8baa-20128d240487
+
+	measure 'Within Benchmark % PY' = CALCULATE ( [Within Benchmark %], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+		formatString: 0.0%
+		displayFolder: 02 Service Level
+		lineageTag: 287b79e5-2c75-5f51-99e4-2a5f499b9ee0
+
+	measure 'Benchmark Change (pts)' = [Within Benchmark %] - [Within Benchmark % PY]
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 02 Service Level
+		lineageTag: 054eefc8-5ba2-5213-941b-3b2289554c7e
+
+	measure 'Within Benchmark % Rolling 3M' = CALCULATE ( [Within Benchmark %], DATESINPERIOD ( DimDate[Date], MAX ( DimDate[Date] ), -3, MONTH ) )
+		formatString: 0.0%
+		displayFolder: 02 Service Level
+		lineageTag: 5167abe8-a67e-5efb-baae-43efeae5b08c
+
+	measure 'Benchmark Status Color' =
+			VAR Chg = [Benchmark Change (pts)]
+			RETURN SWITCH ( TRUE (), ISBLANK ( Chg ), BLANK (), Chg >= 0, "#2E7D32", Chg >= -0.03, "#F2A900", "#C62828" )
+		displayFolder: 02 Service Level
+		lineageTag: 2584a3a3-4302-5c7b-ad02-6b35bfa144c9
+
+	measure 'Digital Share %' = DIVIDE ( CALCULATE ( [Total Requests], DimChannel[ChannelGroup] = "Digital" ), [Total Requests] )
+		formatString: 0.0%
+		displayFolder: 03 Mix
+		lineageTag: 812e85a7-c88e-5601-865d-8be832c90dd0
+
+	measure 'Digital Share % PY' = CALCULATE ( [Digital Share %], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+		formatString: 0.0%
+		displayFolder: 03 Mix
+		lineageTag: 2873a75d-fbaf-5ca5-bb24-c48f2a460b65
+
+	measure 'Share of Requests %' = DIVIDE ( [Total Requests], CALCULATE ( [Total Requests], ALLSELECTED ( DimServiceType ) ) )
+		formatString: 0.0%
+		displayFolder: 03 Mix
+		lineageTag: 0afb7d9c-fb9c-55fb-aef9-3b1225fc7a44
+
+	measure 'Weekend Share %' = DIVIDE ( CALCULATE ( [Total Requests], DimDate[IsWeekend] = 1 ), [Total Requests] )
+		formatString: 0.0%
+		displayFolder: 03 Mix
+		lineageTag: c4addff0-001e-5eb2-b006-ea0639e2d9be
+
+	/// This month's volume vs the average month in the selected years
+	measure 'Seasonality Index' =
+			VAR ThisMonth = [Total Requests]
+			VAR AvgMonth =
+			    AVERAGEX ( ALLSELECTED ( DimDate[YearMonth] ), CALCULATE ( [Total Requests] ) )
+			RETURN DIVIDE ( ThisMonth, AvgMonth )
+		formatString: 0.00
+		displayFolder: 03 Mix
+		lineageTag: c81ba87c-a851-52d3-9c98-8eb31d5fcabe
+
+	measure 'Service Rank (Volume)' =
+			IF ( ISINSCOPE ( DimServiceType[ServiceName] ),
+			     RANKX ( ALLSELECTED ( DimServiceType[ServiceName] ), [Total Requests], , DESC, DENSE ) )
+		displayFolder: 04 Ranking
+		lineageTag: 99773f61-c3eb-53d5-a70e-88bd1641a971
+
+	measure 'Community Rank (Volume)' =
+			IF ( ISINSCOPE ( DimCommunity[CommunityName] ),
+			     RANKX ( ALLSELECTED ( DimCommunity[CommunityName] ), [Total Requests], , DESC, DENSE ) )
+		displayFolder: 04 Ranking
+		lineageTag: 3c4b55f0-7126-54c8-866b-8e7bc67732e0
+
+	measure 'Community Rank (Benchmark, min 1,000)' =
+			IF (
+			    ISINSCOPE ( DimCommunity[CommunityName] ) && [Total Requests] >= 1000,
+			    RANKX (
+			        FILTER ( ALLSELECTED ( DimCommunity[CommunityName] ), [Total Requests] >= 1000 ),
+			        [Within Benchmark %], , ASC, DENSE
+			    )
+			)
+		displayFolder: 04 Ranking
+		lineageTag: 83856cd5-a57a-5f5f-bdb1-8c5714f027d8
+
+	measure 'Data As Of' = "Calgary 311 open data · requests to " & FORMAT ( MAX ( DimDate[Date] ) , "d mmm yyyy" )
+		displayFolder: 05 UX
+		lineageTag: bbfa5f0c-9f99-5c1d-8cd5-3b56c6e9bddb
+
+	measure 'Page Title Service' = "Service performance – " & SELECTEDVALUE ( DimServiceType[ServiceCategory], "All categories" )
+		displayFolder: 05 UX
+		lineageTag: 139dc9f2-019c-5902-bdf7-a497c392e06d
+
+	measure 'Card Sub Requests' =
+			VAR v = [Requests YoY %]
+			RETURN IF ( v >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( v ), "0.0%" ) & " vs PY"
+		displayFolder: 06 Card Labels
+		lineageTag: f67b6894-b71e-53ab-ae5d-6e3d30d80138
+
+	measure 'Card Sub Median' = "P90 " & FORMAT ( [P90 Resolution Days], "0" ) & " days"
+		displayFolder: 06 Card Labels
+		lineageTag: 9a756d43-4284-5914-bb43-a51444c4ac82
+
+	measure 'Card Sub Benchmark' =
+			VAR d = [Benchmark Change (pts)]
+			RETURN IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ) * 100, "0.0" ) & " pts vs PY"
+		displayFolder: 06 Card Labels
+		lineageTag: 11d5389c-cf45-5f10-8061-7eac3b781a91
+
+	measure 'Card Sub Same Day' = "PY " & FORMAT ( CALCULATE ( [Same-Day Closure %], SAMEPERIODLASTYEAR ( DimDate[Date] ) ), "0.0%" )
+		displayFolder: 06 Card Labels
+		lineageTag: fa345f40-f184-51c8-8b81-21fefdded20a
+
+	measure 'Card Sub Backlog' = FORMAT ( [Backlog Over 90 Days %], "0%" ) & " open > 90 days"
+		displayFolder: 06 Card Labels
+		lineageTag: fca62137-d7a1-5734-ab8d-11e6ff70980d
+
+	measure 'Card Sub Digital' =
+			VAR d = [Digital Share %] - [Digital Share % PY]
+			RETURN IF ( d >= 0, "▲ ", "▼ " ) & FORMAT ( ABS ( d ) * 100, "0.0" ) & " pts vs PY"
+		displayFolder: 06 Card Labels
+		lineageTag: d5790dbb-10c3-59b8-ac1b-bcb78259ecd8
+
+	measure 'Card Color Benchmark' = IF ( [Benchmark Change (pts)] >= 0, "#2E7D32", "#B71C1C" )
+		displayFolder: 06 Card Labels
+		lineageTag: f6f9a1be-4c0f-59d1-b32a-6cb0ac7caab3
+
+	measure 'Card Color Digital' = IF ( [Digital Share %] >= [Digital Share % PY], "#2E7D32", "#B71C1C" )
+		displayFolder: 06 Card Labels
+		lineageTag: 2a00a45e-278d-58ef-a986-23347f1f0789
+
+	measure 'Simulated Value' =
+			VAR m = SELECTEDVALUE ( comparison_summary[Metric] )
+			VAR v = SUM ( comparison_summary[Simulated] )
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( v ), BLANK (),
+			        CONTAINSSTRING ( m, "share" ) || CONTAINSSTRING ( m, "growth" ) || CONTAINSSTRING ( m, "closed" ), FORMAT ( v, "0.0%" ),
+			        CONTAINSSTRING ( m, "÷" ) || CONTAINSSTRING ( m, "index" ), FORMAT ( v, "0.00" ),
+			        FORMAT ( v, "#,0" )
+			    )
+		displayFolder: 07 Comparison
+		lineageTag: e9698fa6-215b-554a-8548-356f6c7f101b
+
+	measure 'Real Value' =
+			VAR m = SELECTEDVALUE ( comparison_summary[Metric] )
+			VAR v = SUM ( comparison_summary[Real (Calgary)] )
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( v ), BLANK (),
+			        CONTAINSSTRING ( m, "share" ) || CONTAINSSTRING ( m, "growth" ) || CONTAINSSTRING ( m, "closed" ), FORMAT ( v, "0.0%" ),
+			        CONTAINSSTRING ( m, "÷" ) || CONTAINSSTRING ( m, "index" ), FORMAT ( v, "0.00" ),
+			        FORMAT ( v, "#,0" )
+			    )
+		displayFolder: 07 Comparison
+		lineageTag: ff063030-c272-5315-bffb-d08f3bbe284e
+
+	column Value
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 088679ef-b233-56d4-b64e-e2de177cbf0f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Measures = calculated
+		mode: import
+		source = ROW ( "Value", 0 )
+
+	annotation PBI_Id = measures
+

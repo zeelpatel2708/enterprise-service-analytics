@@ -1,0 +1,5 @@
+expression ProjectFolder = "C:\Users\Lenovo\Downloads\enterprise-service-analytics\enterprise-service-analytics" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: abddc41e-77ab-5f93-a2c4-d2744eb93f0d
+
+	annotation PBI_ResultType = Text
+

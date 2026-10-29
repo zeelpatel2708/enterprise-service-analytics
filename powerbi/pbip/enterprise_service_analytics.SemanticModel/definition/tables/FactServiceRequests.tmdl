@@ -1,0 +1,371 @@
+table FactServiceRequests
+	lineageTag: 1b10cdfa-cf88-5cf4-9b0e-4e54b7e6b45a
+
+	column ServiceRequestID
+		dataType: string
+		lineageTag: 94569fb8-623a-58e1-a12a-729bee908d00
+		summarizeBy: none
+		sourceColumn: ServiceRequestID
+
+		annotation SummarizationSetBy = Automatic
+
+	column AssetID
+		dataType: string
+		isHidden
+		lineageTag: aa820594-529b-5872-a1c4-f9b72ea64e9c
+		summarizeBy: none
+		sourceColumn: AssetID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 80583f8a-2f83-5e95-b089-c0442276be8e
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column TechnicianKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 995a60cc-9272-57a6-b650-295e680c2608
+		summarizeBy: none
+		sourceColumn: TechnicianKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column RegionKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ffe254b3-dc92-5ff4-883e-1125302ef9bd
+		summarizeBy: none
+		sourceColumn: RegionKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ServiceTypeKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 47497320-43c5-51eb-a990-1d370fe2ffd2
+		summarizeBy: none
+		sourceColumn: ServiceTypeKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column PriorityKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 098e1923-6abc-5624-8dcc-94129378365a
+		summarizeBy: none
+		sourceColumn: PriorityKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CreatedDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 35860900-9057-53c7-bb50-49cbf086aeaa
+		summarizeBy: none
+		sourceColumn: CreatedDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ClosedDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 39d6ce53-75a3-5c9d-8ab2-7a510517f8e1
+		summarizeBy: none
+		sourceColumn: ClosedDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CreatedAt
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn
+		lineageTag: 948c2fc2-3540-5731-98ef-5b4b0a6d38ef
+		summarizeBy: none
+		sourceColumn: CreatedAt
+
+		annotation SummarizationSetBy = Automatic
+
+	column ClosedAt
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn
+		lineageTag: 245bc27b-005a-5cdd-ba46-cd77fa9588b2
+		summarizeBy: none
+		sourceColumn: ClosedAt
+
+		annotation SummarizationSetBy = Automatic
+
+	column CreatedHour
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 46ec2e5b-8d7a-5a7b-a20b-13ac29682a5a
+		summarizeBy: none
+		sourceColumn: CreatedHour
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 21ed3c3e-ceab-59f2-a34d-73bd923f1dd0
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsClosed
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: aaa2b3d7-c718-5653-ae3e-68a0932bc972
+		summarizeBy: sum
+		sourceColumn: IsClosed
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsOpen
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 22ef0194-17a6-5f93-b7ee-13b4ab8f57aa
+		summarizeBy: sum
+		sourceColumn: IsOpen
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsCancelled
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ae4ac0aa-b75e-5a30-8264-9401a1daa9a5
+		summarizeBy: sum
+		sourceColumn: IsCancelled
+
+		annotation SummarizationSetBy = Automatic
+
+	column SLAHours
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 9b7cbb75-bad2-554d-bc7a-a90958e92c6a
+		summarizeBy: none
+		sourceColumn: SLAHours
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResolutionHours
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 3f2da05d-6179-552d-8efa-89fdacebbfab
+		summarizeBy: sum
+		sourceColumn: ResolutionHours
+
+		annotation SummarizationSetBy = Automatic
+
+	column SLAMet
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 5cd85073-dc8c-52cb-af3d-4f204df160e4
+		summarizeBy: sum
+		sourceColumn: SLAMet
+
+		annotation SummarizationSetBy = Automatic
+
+	column SLAStatus
+		dataType: string
+		lineageTag: 19cba8a5-476b-5d4f-b820-7cd14ed911e2
+		summarizeBy: none
+		sourceColumn: SLAStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column OpenAgeHours
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 66f08c66-3944-5b42-be7d-0fd5c163e325
+		summarizeBy: sum
+		sourceColumn: OpenAgeHours
+
+		annotation SummarizationSetBy = Automatic
+
+	column RepeatVisitFlag
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 09eaea7e-995c-5eaa-9cf3-20a67c62e29f
+		summarizeBy: sum
+		sourceColumn: RepeatVisitFlag
+
+		annotation SummarizationSetBy = Automatic
+
+	column RepeatOfRequestID
+		dataType: string
+		isHidden
+		lineageTag: d72ad32d-9f69-57c7-a63b-1b2954a589a5
+		summarizeBy: none
+		sourceColumn: RepeatOfRequestID
+
+		annotation SummarizationSetBy = Automatic
+
+	column FirstTimeFixFlag
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 99b4163e-3547-5b48-8489-179bee9f16b4
+		summarizeBy: sum
+		sourceColumn: FirstTimeFixFlag
+
+		annotation SummarizationSetBy = Automatic
+
+	column InvoiceID
+		dataType: string
+		isHidden
+		lineageTag: 222b6429-f0a3-5513-a854-ac0cdf99a530
+		summarizeBy: none
+		sourceColumn: InvoiceID
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsInvoiced
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: fbc061d5-37ea-5aab-87bb-14c626b3d801
+		summarizeBy: sum
+		sourceColumn: IsInvoiced
+
+		annotation SummarizationSetBy = Automatic
+
+	column BillingType
+		dataType: string
+		lineageTag: a010e040-0216-53c8-8b32-b51c6205b063
+		summarizeBy: none
+		sourceColumn: BillingType
+
+		annotation SummarizationSetBy = Automatic
+
+	column WorkHours
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 05b410c7-a295-5ccb-8ac2-e5f068cb3eef
+		summarizeBy: sum
+		sourceColumn: WorkHours
+
+		annotation SummarizationSetBy = Automatic
+
+	column LabourCost
+		dataType: decimal
+		isHidden
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 19c4d824-e4be-582d-aa4f-c607fa7e0ae6
+		summarizeBy: sum
+		sourceColumn: LabourCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column PartsCost
+		dataType: decimal
+		isHidden
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: fcecb71e-d16a-5281-861b-f3a17714b751
+		summarizeBy: sum
+		sourceColumn: PartsCost
+
+		annotation SummarizationSetBy = Automatic
+
+	column ServiceRevenue
+		dataType: decimal
+		isHidden
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 2e60fa75-b79a-5f01-a513-0c5b959add5e
+		summarizeBy: sum
+		sourceColumn: ServiceRevenue
+
+		annotation SummarizationSetBy = Automatic
+
+	column CSATScore
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d08a78a8-fad2-5293-a85b-48fecaf581f6
+		summarizeBy: sum
+		sourceColumn: CSATScore
+
+		annotation SummarizationSetBy = Automatic
+
+	column DQ_MissingTechnician
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0925bba5-a5b6-5104-9c07-c5241b4e55e2
+		summarizeBy: sum
+		sourceColumn: DQ_MissingTechnician
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactServiceRequests = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\model\FactServiceRequests.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"ServiceRequestID", type text},
+				        {"AssetID", type text},
+				        {"CustomerKey", Int64.Type},
+				        {"TechnicianKey", Int64.Type},
+				        {"RegionKey", Int64.Type},
+				        {"ServiceTypeKey", Int64.Type},
+				        {"PriorityKey", Int64.Type},
+				        {"CreatedDateKey", Int64.Type},
+				        {"ClosedDateKey", Int64.Type},
+				        {"CreatedAt", type datetime},
+				        {"ClosedAt", type datetime},
+				        {"CreatedHour", Int64.Type},
+				        {"Status", type text},
+				        {"IsClosed", Int64.Type},
+				        {"IsOpen", Int64.Type},
+				        {"IsCancelled", Int64.Type},
+				        {"SLAHours", type number},
+				        {"ResolutionHours", type number},
+				        {"SLAMet", Int64.Type},
+				        {"SLAStatus", type text},
+				        {"OpenAgeHours", type number},
+				        {"RepeatVisitFlag", Int64.Type},
+				        {"RepeatOfRequestID", type text},
+				        {"FirstTimeFixFlag", Int64.Type},
+				        {"InvoiceID", type text},
+				        {"IsInvoiced", Int64.Type},
+				        {"BillingType", type text},
+				        {"WorkHours", type number},
+				        {"LabourCost", Currency.Type},
+				        {"PartsCost", Currency.Type},
+				        {"ServiceRevenue", Currency.Type},
+				        {"CSATScore", Int64.Type},
+				        {"DQ_MissingTechnician", Int64.Type}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

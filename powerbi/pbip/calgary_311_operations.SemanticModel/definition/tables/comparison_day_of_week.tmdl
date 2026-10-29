@@ -1,0 +1,60 @@
+table comparison_day_of_week
+	lineageTag: 16f515ca-9c3b-5df7-9c9a-1a4db28a1804
+
+	column Edition
+		dataType: string
+		lineageTag: cca7cf5c-9e16-5b18-a008-5caa6da88045
+		summarizeBy: none
+		sourceColumn: Edition
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfWeekNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: abb3f9be-f516-56d2-99de-f090c323aa3e
+		summarizeBy: none
+		sourceColumn: DayOfWeekNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfWeek
+		dataType: string
+		lineageTag: ff18a34d-f78e-506e-b8ce-c44e12fee6bc
+		summarizeBy: none
+		sourceColumn: DayOfWeek
+		sortByColumn: DayOfWeekNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShareOfRequests
+		dataType: double
+		formatString: #,0.00
+		lineageTag: f98b6f9d-f55c-538b-a76f-8198a569fb90
+		summarizeBy: sum
+		sourceColumn: ShareOfRequests
+
+		annotation SummarizationSetBy = Automatic
+
+	partition comparison_day_of_week = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\comparison\comparison_day_of_week.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"Edition", type text},
+				        {"DayOfWeekNumber", Int64.Type},
+				        {"DayOfWeek", type text},
+				        {"ShareOfRequests", type number}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

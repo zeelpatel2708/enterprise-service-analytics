@@ -1,0 +1,68 @@
+table comparison_data_quality
+	lineageTag: f3137353-91b5-52f7-9aa1-d814cf3d8f6f
+
+	column Edition
+		dataType: string
+		lineageTag: 6301e450-3cdb-590d-94cf-6d87d740f779
+		summarizeBy: none
+		sourceColumn: Edition
+
+		annotation SummarizationSetBy = Automatic
+
+	column Check
+		dataType: string
+		lineageTag: cbd8f4a2-e393-5b87-96bb-3cb5b73b2bbc
+		summarizeBy: none
+		sourceColumn: Check
+
+		annotation SummarizationSetBy = Automatic
+
+	column RowsAffected
+		dataType: int64
+		formatString: 0
+		lineageTag: 445f66cb-c234-5db8-9c32-c7e1ccd64afb
+		summarizeBy: sum
+		sourceColumn: RowsAffected
+
+		annotation SummarizationSetBy = Automatic
+
+	column PctOfRaw
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 5fd3ec16-0a8f-5ca6-92f6-acacfb1c4640
+		summarizeBy: sum
+		sourceColumn: PctOfRaw
+
+		annotation SummarizationSetBy = Automatic
+
+	column Origin
+		dataType: string
+		lineageTag: 48e9919c-73f7-5304-8dee-f7bc40071f12
+		summarizeBy: none
+		sourceColumn: Origin
+
+		annotation SummarizationSetBy = Automatic
+
+	partition comparison_data_quality = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\comparison\comparison_data_quality.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"Edition", type text},
+				        {"Check", type text},
+				        {"RowsAffected", Int64.Type},
+				        {"PctOfRaw", type number},
+				        {"Origin", type text}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

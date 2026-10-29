@@ -1,0 +1,131 @@
+table DimCustomer
+	lineageTag: 63a2bc38-13b9-50f5-b0a4-fe55c6b8c90a
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0e1b942e-745a-5e81-89d3-be208a2fde34
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerID
+		dataType: string
+		lineageTag: 1f089e28-7c65-5055-866f-a0b54c21740a
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerName
+		dataType: string
+		lineageTag: 864bc1b3-a3ef-55e6-9aba-e0c0b8cc883c
+		summarizeBy: none
+		sourceColumn: CustomerName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Industry
+		dataType: string
+		lineageTag: c6b6760f-b907-5c28-b494-5b45f859720f
+		summarizeBy: none
+		sourceColumn: Industry
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerSegment
+		dataType: string
+		lineageTag: d3b7a146-4d00-5635-a4b7-3ef21bc836b8
+		summarizeBy: none
+		sourceColumn: CustomerSegment
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 774e84d0-f7dc-572b-b635-eaa555de9cdf
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column Province
+		dataType: string
+		lineageTag: 76db26a3-6f5d-5111-96f3-84227270c827
+		summarizeBy: none
+		sourceColumn: Province
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccountStartDate
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: bf236aa0-86a3-5df5-b3fb-d18d01e9e285
+		summarizeBy: none
+		sourceColumn: AccountStartDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column FirstRequestDate
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 51e47a83-1f0c-5b0a-be4b-8be35bfdd933
+		summarizeBy: none
+		sourceColumn: FirstRequestDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column LastRequestDate
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: c8aaaf2e-59e2-55bb-a6b2-9df82d93aed9
+		summarizeBy: none
+		sourceColumn: LastRequestDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ActivityStatus
+		dataType: string
+		lineageTag: eee397a6-c628-5a71-91f8-3a6ed810ecd5
+		summarizeBy: none
+		sourceColumn: ActivityStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimCustomer = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\model\DimCustomer.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"CustomerKey", Int64.Type},
+				        {"CustomerID", type text},
+				        {"CustomerName", type text},
+				        {"Industry", type text},
+				        {"CustomerSegment", type text},
+				        {"City", type text},
+				        {"Province", type text},
+				        {"AccountStartDate", type date},
+				        {"FirstRequestDate", type date},
+				        {"LastRequestDate", type date},
+				        {"ActivityStatus", type text}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

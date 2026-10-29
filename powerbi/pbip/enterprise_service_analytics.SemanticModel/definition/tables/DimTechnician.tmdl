@@ -1,0 +1,131 @@
+table DimTechnician
+	lineageTag: 6155d1b6-8b1d-5cc4-ad25-b1e229a2faa0
+
+	column TechnicianKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c87954c9-45fc-5cef-bf78-e17a5b268df7
+		summarizeBy: none
+		sourceColumn: TechnicianKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column TechnicianID
+		dataType: string
+		lineageTag: d56370f9-603d-5f11-a8a9-5fbd776be329
+		summarizeBy: none
+		sourceColumn: TechnicianID
+
+		annotation SummarizationSetBy = Automatic
+
+	column TechnicianName
+		dataType: string
+		lineageTag: cbec00f8-5502-5261-9a10-036c2af73830
+		summarizeBy: none
+		sourceColumn: TechnicianName
+
+		annotation SummarizationSetBy = Automatic
+
+	column SkillLevel
+		dataType: string
+		lineageTag: 0bb41b6c-6bef-50ab-a8d4-3425f4878de6
+		summarizeBy: none
+		sourceColumn: SkillLevel
+
+		annotation SummarizationSetBy = Automatic
+
+	column Specialization
+		dataType: string
+		lineageTag: 695dc222-24f9-5f5a-a28d-53bb09071f56
+		summarizeBy: none
+		sourceColumn: Specialization
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region
+		dataType: string
+		lineageTag: 546c2d6d-15d0-5c1a-8996-890363a57953
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column HireDate
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 2f59c9af-8881-54b0-8a84-3b2d51e075fb
+		summarizeBy: none
+		sourceColumn: HireDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column TerminationDate
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: e3dff5ee-af33-50c8-9645-7133065f7ee0
+		summarizeBy: none
+		sourceColumn: TerminationDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column IsActive
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f812923e-4946-5497-a472-3bebc3a4e9a8
+		summarizeBy: sum
+		sourceColumn: IsActive
+
+		annotation SummarizationSetBy = Automatic
+
+	column TenureYears
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 40f5ff4f-bc2c-5124-a97c-e502f07c3244
+		summarizeBy: none
+		sourceColumn: TenureYears
+
+		annotation SummarizationSetBy = Automatic
+
+	column TenureBand
+		dataType: string
+		lineageTag: f7ed6310-6756-547e-9ea0-ea18f09de5ab
+		summarizeBy: none
+		sourceColumn: TenureBand
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimTechnician = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\model\DimTechnician.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"TechnicianKey", Int64.Type},
+				        {"TechnicianID", type text},
+				        {"TechnicianName", type text},
+				        {"SkillLevel", type text},
+				        {"Specialization", type text},
+				        {"Region", type text},
+				        {"HireDate", type date},
+				        {"TerminationDate", type date},
+				        {"IsActive", Int64.Type},
+				        {"TenureYears", type number},
+				        {"TenureBand", type text}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

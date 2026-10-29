@@ -1,0 +1,98 @@
+table FactTargets
+	lineageTag: 56c7bc57-38c3-5bc8-952d-bfade63fa21a
+
+	column RegionKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 1c406bac-7bd7-5e19-90e3-f352afc957b2
+		summarizeBy: none
+		sourceColumn: RegionKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthStartDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f63326a2-69a2-529a-a6be-f18a5a937f49
+		summarizeBy: none
+		sourceColumn: MonthStartDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column RevenueTarget
+		dataType: decimal
+		isHidden
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 5d90d560-6672-5bec-a333-a8b7127a9394
+		summarizeBy: sum
+		sourceColumn: RevenueTarget
+
+		annotation SummarizationSetBy = Automatic
+
+	column SLATarget
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 71456083-5503-5295-959d-6939b7482be5
+		summarizeBy: sum
+		sourceColumn: SLATarget
+
+		annotation SummarizationSetBy = Automatic
+
+	column CSATTarget
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 45d33b6d-72ed-54d1-bb53-eefe13b78493
+		summarizeBy: sum
+		sourceColumn: CSATTarget
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductivityTarget
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 970d0614-99c3-55fb-84c9-a67a908d9aa5
+		summarizeBy: sum
+		sourceColumn: ProductivityTarget
+
+		annotation SummarizationSetBy = Automatic
+
+	column BacklogTarget
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7c5392f2-b07c-55e5-be74-debb45127245
+		summarizeBy: sum
+		sourceColumn: BacklogTarget
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactTargets = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\model\FactTargets.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"RegionKey", Int64.Type},
+				        {"MonthStartDateKey", Int64.Type},
+				        {"RevenueTarget", Currency.Type},
+				        {"SLATarget", type number},
+				        {"CSATTarget", type number},
+				        {"ProductivityTarget", Int64.Type},
+				        {"BacklogTarget", Int64.Type}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

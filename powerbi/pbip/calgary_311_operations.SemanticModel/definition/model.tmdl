@@ -1,0 +1,30 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-CA
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["ProjectFolder", "DimDate", "DimServiceType", "DimCommunity", "DimChannel", "FactServiceRequests", "FactBacklogSnapshot", "comparison_summary", "comparison_seasonality", "comparison_day_of_week", "comparison_resolution_distribution", "comparison_data_quality", "comparison_capabilities"]
+
+annotation PBI_ProTooling = ["DevMode","TMDLView_Desktop"]
+
+ref table DimDate
+ref table DimServiceType
+ref table DimCommunity
+ref table DimChannel
+ref table FactServiceRequests
+ref table FactBacklogSnapshot
+ref table comparison_summary
+ref table comparison_seasonality
+ref table comparison_day_of_week
+ref table comparison_resolution_distribution
+ref table comparison_data_quality
+ref table comparison_capabilities
+ref table _Measures
+
+ref cultureInfo en-US
+

@@ -1,0 +1,31 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-CA
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["ProjectFolder", "DimDate", "DimRegion", "DimCustomer", "DimTechnician", "DimServiceType", "DimPriority", "FactServiceRequests", "FactTargets", "FactBacklogSnapshot", "SecurityUserRegion"]
+
+annotation PBI_ProTooling = ["DevMode","TMDLView_Desktop"]
+
+ref table DimDate
+ref table DimRegion
+ref table DimCustomer
+ref table DimTechnician
+ref table DimServiceType
+ref table DimPriority
+ref table FactServiceRequests
+ref table FactTargets
+ref table FactBacklogSnapshot
+ref table SecurityUserRegion
+ref table 'KPI Selector'
+ref table _Measures
+
+ref role 'Regional Manager'
+
+ref cultureInfo en-US
+

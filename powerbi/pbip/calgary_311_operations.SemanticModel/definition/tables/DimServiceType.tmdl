@@ -1,0 +1,88 @@
+table DimServiceType
+	lineageTag: 48f6b797-efe7-526d-9733-6d78138dbe45
+
+	column ServiceTypeKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c5c59078-2987-5fe6-88a0-a541812251f7
+		summarizeBy: none
+		sourceColumn: ServiceTypeKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ServiceName
+		dataType: string
+		lineageTag: dd90933a-d144-518e-8add-6b14caac2643
+		summarizeBy: none
+		sourceColumn: ServiceName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ServiceCategory
+		dataType: string
+		lineageTag: 4b730e2b-da07-55d5-8c61-defe98e17f4b
+		summarizeBy: none
+		sourceColumn: ServiceCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column Agency
+		dataType: string
+		lineageTag: 3897a217-011e-5a44-9a16-33a5b275bc18
+		summarizeBy: none
+		sourceColumn: Agency
+
+		annotation SummarizationSetBy = Automatic
+
+	column BenchmarkDays
+		dataType: int64
+		formatString: 0
+		lineageTag: 5b44a362-fea3-5d06-8f6e-a406353e53ef
+		summarizeBy: none
+		sourceColumn: BenchmarkDays
+
+		annotation SummarizationSetBy = Automatic
+
+	column VolumeRank
+		dataType: int64
+		formatString: 0
+		lineageTag: c8038186-b0f2-5eeb-98a7-171071f52fe4
+		summarizeBy: none
+		sourceColumn: VolumeRank
+
+		annotation SummarizationSetBy = Automatic
+
+	column Top20Service
+		dataType: string
+		lineageTag: 8d92081f-ebf2-53de-b511-fbc2e1fc08ec
+		summarizeBy: none
+		sourceColumn: Top20Service
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimServiceType = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\calgary\model\DimServiceType.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"ServiceTypeKey", Int64.Type},
+				        {"ServiceName", type text},
+				        {"ServiceCategory", type text},
+				        {"Agency", type text},
+				        {"BenchmarkDays", Int64.Type},
+				        {"VolumeRank", Int64.Type},
+				        {"Top20Service", type text}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

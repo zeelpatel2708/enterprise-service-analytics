@@ -1,0 +1,129 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "5f73a7eb0445da7a3173",
+  "position": {
+    "x": 20,
+    "y": 76,
+    "z": 3,
+    "height": 300,
+    "width": 500,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "comparison_summary"
+                    }
+                  },
+                  "Property": "Metric"
+                }
+              },
+              "queryRef": "comparison_summary.Metric",
+              "nativeQueryRef": "Metric"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Simulated Value"
+                }
+              },
+              "queryRef": "_Measures.Simulated Value",
+              "nativeQueryRef": "Simulated ",
+              "displayName": "Simulated "
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Real Value"
+                }
+              },
+              "queryRef": "_Measures.Real Value",
+              "nativeQueryRef": "Real (Calgary)",
+              "displayName": "Real (Calgary)"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Headline Comparison'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "353a2c5a4cd402335927",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "comparison_summary"
+              }
+            },
+            "Property": "Metric"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "4fed745b9ea707c49a10",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Simulated Value"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "3f1a4030a8125b78398a",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Real Value"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

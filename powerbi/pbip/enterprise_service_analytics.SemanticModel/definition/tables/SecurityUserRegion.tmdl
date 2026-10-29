@@ -1,0 +1,51 @@
+table SecurityUserRegion
+	isHidden
+	lineageTag: f25c3b8e-ca1e-59c5-8c44-368bf691e929
+
+	column UserEmail
+		dataType: string
+		lineageTag: e85b9dbb-bd9f-5cc0-af33-7225aac5f2b3
+		summarizeBy: none
+		sourceColumn: UserEmail
+
+		annotation SummarizationSetBy = Automatic
+
+	column RegionKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 6716e88f-c80a-50d1-85fa-960cdf971637
+		summarizeBy: none
+		sourceColumn: RegionKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Role
+		dataType: string
+		lineageTag: ebc98de2-8627-5f4d-994f-050083fbee19
+		summarizeBy: none
+		sourceColumn: Role
+
+		annotation SummarizationSetBy = Automatic
+
+	partition SecurityUserRegion = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(
+				        File.Contents(ProjectFolder & "\data\model\SecurityUserRegion.csv"),
+				        [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    Typed = Table.TransformColumnTypes(
+				        Promoted,
+				        {
+				        {"UserEmail", type text},
+				        {"RegionKey", Int64.Type},
+				        {"Role", type text}
+				        },
+				        "en-CA")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+
